@@ -1,11 +1,47 @@
 ;;; init.el -*- lexical-binding: t; -*-
+;;; Commentary: Emacs init file
 
-(use-package no-littering
-  :ensure t)
+(defvar elpaca-installer-version 0.9)
+(defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
+(defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
+(defvar elpaca-repos-directory (expand-file-name "repos/" elpaca-directory))
+(defvar elpaca-order '(elpaca :repo "https://github.com/progfolio/elpaca.git"
+                       :ref nil :depth 1 :inherit ignore
+                       :files (:defaults "elpaca-test.el" (:exclude "extensions"))
+                       :build (:not elpaca--activate-package)))
+(let* ((repo  (expand-file-name "elpaca/" elpaca-repos-directory))
+       (build (expand-file-name "elpaca/" elpaca-builds-directory))
+       (order (cdr elpaca-order))
+       (default-directory repo))
+  (add-to-list 'load-path (if (file-exists-p build) build repo))
+  (unless (file-exists-p repo)
+    (make-directory repo t)
+    (when (< emacs-major-version 28) (require 'subr-x))
+    (condition-case-unless-debug err
+        (if-let* ((buffer (pop-to-buffer-same-window "*elpaca-bootstrap*"))
+                  ((zerop (apply #'call-process `("git" nil ,buffer t "clone"
+                                                  ,@(when-let* ((depth (plist-get order :depth)))
+                                                      (list (format "--depth=%d" depth) "--no-single-branch"))
+                                                  ,(plist-get order :repo) ,repo))))
+                  ((zerop (call-process "git" nil buffer t "checkout"
+                                        (or (plist-get order :ref) "--"))))
+                  (emacs (concat invocation-directory invocation-name))
+                  ((zerop (call-process emacs nil buffer nil "-Q" "-L" "." "--batch"
+                                        "--eval" "(byte-recompile-directory \".\" 0 'force)")))
+                  ((require 'elpaca))
+                  ((elpaca-generate-autoloads "elpaca" repo)))
+            (progn (message "%s" (buffer-string)) (kill-buffer buffer))
+          (error "%s" (with-current-buffer buffer (buffer-string))))
+      ((error) (warn "%s" err) (delete-directory repo 'recursive))))
+  (unless (require 'elpaca-autoloads nil t)
+    (require 'elpaca)
+    (elpaca-generate-autoloads "elpaca" repo)
+    (load "./elpaca-autoloads")))
+(add-hook 'after-init-hook #'elpaca-process-queues)
+(elpaca `(,@elpaca-order))
 
-(use-package delsel
-  :ensure nil
-  :hook (after-init . delete-selection-mode))
+(elpaca elpaca-use-package
+        (elpaca-use-package-mode))
 
 (defun nto/keyboard-quit-dwim ()
   "Do-What-I-Mean behaviour for a general `keyboard-quit'.
@@ -31,17 +67,38 @@ The DWIM behaviour of this command is as follows:
    (t
     (keyboard-quit))))
 
-(define-key global-map (kbd "M-c") nil)
-(define-key global-map (kbd "C-g") #'nto/keyboard-quit-dwim)
-(define-key global-map (kbd "<esc>") #'nto/keyboard-quit-dwim)
-(define-key global-map (kbd "<escape>") #'nto/keyboard-quit-dwim)
+(use-package emacs
+  :ensure nil
+  :config
+  (setq inhibit-splash-screen t)
+  (setq truncate-lines t)
+  (define-key global-map (kbd "M-c") nil)
+  (define-key global-map (kbd "C-g") #'nto/keyboard-quit-dwim)
+  (define-key global-map (kbd "<esc>") #'nto/keyboard-quit-dwim)
+  (define-key global-map (kbd "<escape>") #'nto/keyboard-quit-dwim)
+  (load-theme 'modus-vivendi))
 
-(menu-bar-mode -1)
-(scroll-bar-mode 1)
-(tool-bar-mode -1)
+(use-package which-key
+  :ensure t
+  :config
+  (setq which-key-show-early-on-C-h t)
+  (setq which-key-idle-delay 10000)
+  (setq which-key-idle-secondary-delay 0.05)
+  :init
+  (which-key-mode))
+
+
+(use-package no-littering
+  :ensure t)
+
+(use-package delsel
+  :ensure nil
+  :hook (elpaca-after-init . delete-selection-mode))
 
 (use-package undo-tree
   :ensure t
+  :custom
+  (undo-tree-history-directory-alist `(("." . ,(concat nto-cache "undo-tree-hist/"))))
   :init
   (global-undo-tree-mode))
 
@@ -73,11 +130,11 @@ The DWIM behaviour of this command is as follows:
 
 (use-package vertico
   :ensure t
-  :hook (after-init . vertico-mode))
+  :hook (elpaca-after-init . vertico-mode))
 
 (use-package marginalia
   :ensure t
-  :hook (after-init . marginalia-mode))
+  :hook (elpaca-after-init . marginalia-mode))
 
 (use-package orderless
   :ensure t
@@ -88,13 +145,13 @@ The DWIM behaviour of this command is as follows:
 
 (use-package savehist
   :ensure nil
-  :hook (after-init . savehist-mode)
+  :hook (elpaca-after-init . savehist-mode)
   :config
   (add-to-list 'savehist-additional-variables 'corfu-history))
 
 (use-package corfu
   :ensure t
-  :hook (after-init . global-corfu-mode)
+  :hook (elpaca-after-init . global-corfu-mode)
   :custom
   (corfu-auto t)
   :bind
@@ -117,6 +174,7 @@ The DWIM behaviour of this command is as follows:
     (add-to-list 'savehist-additional-variables 'corfu-history)))
 
 (use-package cape
+  :ensure t
   :bind
   (("C-c p" . cape-prefix-map)
    ("M-c f" . cape-file)
@@ -136,6 +194,27 @@ The DWIM behaviour of this command is as follows:
   :hook
   ((dired-mode . dired-hide-details-mode)
    (dired-mode . hl-line-mode))
+  :bind
+  (:map dired-mode-map
+        ("h" . #'dired-up-directory)
+        ("l" . #'dired-find-file)
+        ("m" . #'dired-mark)
+        ("t" . #'dired-toggle-marks)
+        ("u" . #'dired-unmark)
+        ("C" . #'dired-do-copy)
+        ("D" . #'dired-do-delete)
+        ("J" . #'dired-goto-file)
+        ("M" . #'dired-do-chmod)
+        ("O" . #'dired-do-chown)
+        ("R" . #'dired-do-rename)
+        ("T" . #'dired-do-touch)
+        ("Y" . #'dired-copy-filename-as-kill)
+        ("+" . #'dired-create-directory)
+        ("-" . #'dired-up-directory)
+        ("% l" . #'dired-downcase)
+        ("% u" . #'dired-upcase)
+        ("; d" . #'epa-dired-do-decrypt)
+        ("; e" . #'epa-dired-do-encrypt))
   :config
   (setq dired-recursive-copies 'always)
   (setq dired-recursive-deletes 'always)
@@ -165,7 +244,7 @@ The DWIM behaviour of this command is as follows:
 
 (use-package evil
   :ensure t
-  :hook (after-init . evil-mode)
+  :hook (elpaca-after-init . evil-mode)
   :config
   (setq evil-want-C-i-jump nil)
   (setq evil-want-C-u-delete nil)
@@ -181,6 +260,12 @@ The DWIM behaviour of this command is as follows:
   (define-key evil-insert-state-map (kbd "C-n") nil)
   (define-key evil-insert-state-map (kbd "C-p") nil)
   (define-key evil-insert-state-map (kbd "C-q") nil))
+
+(use-package evil-collection
+  :ensure t
+  :after evil
+  :config
+  (evil-collection-init))
 
 (use-package evil-escape
   :ensure t
@@ -261,6 +346,23 @@ The DWIM behaviour of this command is as follows:
     (evil-define-key '(multiedit multiedit-insert) 'global
       (kbd "C-n")   #'evil-multiedit-next
       (kbd "C-p")   #'evil-multiedit-prev)))
+
+(use-package rotate-text
+  :ensure (:host github :repo "debug-ito/rotate-text.el")
+  :after evil
+  :config
+  (evil-define-key 'normal 'global
+    (kbd "]r") #'rotate-text
+    (kbd "[r") #'rotate-text-backward))
+
+(use-package electric
+  :ensure nil
+  :hook
+  (prog-mode . electric-indent-local-mode)
+  :config
+  (setq electric-pair-mode -1)
+  (setq electric-quote-mode -1)
+  (setq electric-indent-mode -1))
 
 (provide 'init)
 ;;; init.el ends here
