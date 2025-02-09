@@ -67,16 +67,46 @@ The DWIM behaviour of this command is as follows:
    (t
     (keyboard-quit))))
 
+;; kill word hack
+(defun nto/backward-kill-word()
+  "Same as `backward-kill-word' but if it is invoked on a white space character
+at the beginning of the line it will stop at it, furthermore if it is invoked
+on the beginning of the line it will go the end of the previous line instead
+of delete the previous word."
+  (interactive)
+  (let ((same? (save-excursion
+                 (let ((orig (line-number-at-pos (point)))
+                       (dest (progn
+                               (backward-word)
+                               (line-number-at-pos (point)))))
+                   (eq orig dest))))
+        (start? (eq (point) (line-beginning-position))))
+    (cond (start? (backward-delete-char 1))
+          (same? (backward-kill-word 1))
+          (:else (kill-line 0)))))
+
 (use-package emacs
   :ensure nil
-  :config
-  (setq inhibit-splash-screen t)
-  (setq truncate-lines t)
+  :init
+
+  (add-hook 'prog-mode-hook (lambda () 
+			      (display-line-numbers-mode 1)
+			      (setq display-line-numbers 'relative)))
+
+  (add-hook 'prog-mode-hook #'hs-minor-mode)
   (define-key global-map (kbd "M-c") nil)
+  (define-key global-map (kbd "C-<backspace>") #'nto/backward-kill-word)
   (define-key global-map (kbd "C-g") #'nto/keyboard-quit-dwim)
   (define-key global-map (kbd "<esc>") #'nto/keyboard-quit-dwim)
   (define-key global-map (kbd "<escape>") #'nto/keyboard-quit-dwim)
   (load-theme 'modus-vivendi))
+
+(use-package hl-line
+  :ensure nil
+  :config
+  (setq hl-line-sticky-flag nil)
+  :init
+  (global-hl-line-mode))
 
 (use-package which-key
   :ensure t
@@ -86,7 +116,6 @@ The DWIM behaviour of this command is as follows:
   (setq which-key-idle-secondary-delay 0.05)
   :init
   (which-key-mode))
-
 
 (use-package no-littering
   :ensure t)
@@ -194,27 +223,6 @@ The DWIM behaviour of this command is as follows:
   :hook
   ((dired-mode . dired-hide-details-mode)
    (dired-mode . hl-line-mode))
-  :bind
-  (:map dired-mode-map
-        ("h" . #'dired-up-directory)
-        ("l" . #'dired-find-file)
-        ("m" . #'dired-mark)
-        ("t" . #'dired-toggle-marks)
-        ("u" . #'dired-unmark)
-        ("C" . #'dired-do-copy)
-        ("D" . #'dired-do-delete)
-        ("J" . #'dired-goto-file)
-        ("M" . #'dired-do-chmod)
-        ("O" . #'dired-do-chown)
-        ("R" . #'dired-do-rename)
-        ("T" . #'dired-do-touch)
-        ("Y" . #'dired-copy-filename-as-kill)
-        ("+" . #'dired-create-directory)
-        ("-" . #'dired-up-directory)
-        ("% l" . #'dired-downcase)
-        ("% u" . #'dired-upcase)
-        ("; d" . #'epa-dired-do-decrypt)
-        ("; e" . #'epa-dired-do-encrypt))
   :config
   (setq dired-recursive-copies 'always)
   (setq dired-recursive-deletes 'always)
@@ -244,7 +252,10 @@ The DWIM behaviour of this command is as follows:
 
 (use-package evil
   :ensure t
+  :after undo-tree
   :hook (elpaca-after-init . evil-mode)
+  :custom
+  (evil-undo-system 'undo-tree)
   :config
   (setq evil-want-C-i-jump nil)
   (setq evil-want-C-u-delete nil)
@@ -255,11 +266,85 @@ The DWIM behaviour of this command is as follows:
   (setq evil-split-window-below t)
   (setq evil-split-window-right t)
   (setq evil-want-fine-undo t)
-  (setq evil-undo-system 'undo-tree)
   (setq evil-kill-on-visual-paste nil)
   (define-key evil-insert-state-map (kbd "C-n") nil)
   (define-key evil-insert-state-map (kbd "C-p") nil)
-  (define-key evil-insert-state-map (kbd "C-q") nil))
+  (define-key evil-insert-state-map (kbd "C-q") nil)
+
+  (evil-set-leader 'normal (kbd "SPC") nil)
+  (evil-set-leader 'visual (kbd "SPC") nil)
+  (evil-set-leader 'operator (kbd "SPC") nil)
+  (evil-set-leader 'replace (kbd "SPC") nil)
+  (evil-set-leader 'motion (kbd "SPC") nil)
+  (evil-set-leader 'insert (kbd "C-SPC") nil)
+
+  (evil-set-leader 'normal (kbd "<leader> m") t)
+  (evil-set-leader 'visual (kbd "<leader> m") t)
+  (evil-set-leader 'operator (kbd "<leader> m") t)
+  (evil-set-leader 'replace (kbd "<leader> m") t)
+  (evil-set-leader 'motion (kbd "<leader> m") t)
+  (evil-set-leader 'insert (kbd "<leader> m") t))
+
+(use-package consult
+  :ensure t
+  :after evil
+  :bind
+  (([remap Info-search] . consult-info)
+   ("M-y" . consult-yank-pop)
+   ("<leader> ht" . consult-theme)
+
+   ("<leader> jc" . consult-line)
+   ("<leader> jC" . consult-goto-line)
+
+   ("<leader> fg" . consult-ripgrep)
+   ("<leader> fh" . consult-mode-command)
+   ("<leader> ff" . consult-find)
+   ("<leader> fl" . consult-locate)
+
+   ("<leader> ce" . consult-compile-error)
+
+   ("<leader> bc" . consult-bookmark)
+
+   ("<leader> bb" . consult-buffer)
+   ("<leader> bB" . consult-buffer-other-window)
+
+   :map minibuffer-local-map
+   ("M-s" . consult-history)
+   ("M-r" . consult-history)))
+
+(with-eval-after-load 'evil
+  (evil-define-key 'normal dired-mode-map
+    (kbd "h") #'dired-up-directory
+    (kbd "l") #'dired-find-file)
+
+  (evil-define-key nil 'global
+    (kbd "<leader> hk") #'describe-key
+    (kbd "<leader> hv") #'describe-variable
+    (kbd "<leader> hf") #'describe-function
+    (kbd "<leader> hc") #'describe-command
+    (kbd "<leader> hm") #'describe-map
+
+    (kbd "<leader> .") #'find-file
+    (kbd "<leader> fs") #'save-buffer
+    (kbd "<leader> fd") #'dired 
+
+    (kbd "<leader> bk") #'kill-this-buffer
+
+    (kbd "<leader> bm") #'bookmark-set
+    (kbd "<leader> bd") #'bookmark-delete
+
+    (kbd "<leader> SPC") #'execute-extended-command
+
+    (kbd "<leader> ws") #'evil-window-split
+    (kbd "<leader> wv") #'evil-window-vsplit
+    (kbd "<leader> wc") #'evil-window-delete
+    (kbd "<leader> wh") #'evil-window-left
+    (kbd "<leader> wj") #'evil-window-down
+    (kbd "<leader> wk") #'evil-window-up
+    (kbd "<leader> wl") #'evil-window-right
+    (kbd "<leader> w1") #'delete-other-windows
+    (kbd "<leader> w0") #'delete-window
+    (kbd "<leader> wo") #'other-window))
 
 (use-package evil-collection
   :ensure t
@@ -270,6 +355,7 @@ The DWIM behaviour of this command is as follows:
 (use-package evil-escape
   :ensure t
   :after evil
+  :hook (evil-mode . evil-escape-mode)
   :config
   (setq-default evil-escape-key-sequence "jk")
   (setq-default evil-escape-delay 0.2))
@@ -316,6 +402,12 @@ The DWIM behaviour of this command is as follows:
   :ensure t
   :after evil)
 
+(use-package evil-nerd-commenter
+  :ensure t
+  :after evil
+  :init
+  (evil-define-key '(visual normal) 'global "gc" #'evilnc-comment-operator))
+
 (use-package evil-textobj-anyblock
   :ensure t
   :after evil
@@ -358,11 +450,156 @@ The DWIM behaviour of this command is as follows:
 (use-package electric
   :ensure nil
   :hook
-  (prog-mode . electric-indent-local-mode)
+  (prog-mode . electric-pair-mode)
   :config
-  (setq electric-pair-mode -1)
-  (setq electric-quote-mode -1)
-  (setq electric-indent-mode -1))
+  (setq electric-pair-pairs '((?\{ . ?\})
+			      (?\[ . ?\])
+			      (?\( . ?\))
+			      (?\" . ?\")
+			      (?\' . ?\')
+			      (?\' . ?\'))))
+
+(use-package ace-window
+  :ensure t
+  :after evil
+  :bind
+  (("<leader> ww" . ace-window))
+  :config
+  (setq aw-background nil)
+  (setq aw-dispatch-always t)
+  (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
+  (defvar aw-dispatch-alist
+    '((?x aw-delete-window "Delete Window")
+      (?m aw-swap-window "Swap Windows")
+      (?M aw-move-window "Move Window")
+      (?c aw-copy-window "Copy Window")
+      (?j aw-switch-buffer-in-window "Select Buffer")
+      (?n aw-flip-window)
+      (?u aw-switch-buffer-other-window "Switch Buffer Other Window")
+      (?c aw-split-window-fair "Split Fair Window")
+      (?v aw-split-window-vert "Split Vert Window")
+      (?b aw-split-window-horz "Split Horz Window")
+      (?o delete-other-windows "Delete Other Windows")
+      (?? aw-show-dispatch-help))
+    "List of actions for `aw-dispatch-default'."))
+
+(use-package avy
+  :ensure t
+  :after evil
+  :bind
+  (("<leader> jj" . avy-goto-char-timer)
+   ("<leader> jl" . avy-goto-line)
+   ("<leader> je" . avy-goto-end-of-line)
+   ("<leader> jw" . avy-goto-word-0)))
+
+(use-package google-translate
+  :ensure t
+  :after evil
+  :bind
+  (("<leader> lp" . google-translate-at-point)
+   ("<leader> lP" . google-translate-at-point-reverse))
+  :config
+  (setq google-translate-translation-directions-alist
+        '(("it" . "en") ("en" . "it")))
+  (setq google-translate-default-source-language "it")
+  (setq google-translate-default-target-language "en"))
+
+(use-package tab-bar
+  :after evil
+  :bind
+  (("<leader> <tab>s" . tab-switch)
+   ("<leader> <tab><tab>" . tab-switch)
+   ("<leader> <tab>c" . tab-close)
+   ("<leader> <tab>n" . tab-new)
+   ("<leader> <tab>r" . tab-rename)
+   ("<leader> <tab>b" . switch-to-buffer-other-tab)
+   ("<leader> <tab>d" . dired-other-tab)))
+  
+(use-package project
+  :ensure nil
+  :bind
+  (("<leader> pp" . project-switch-project)
+   ("<leader> pb" . project-switch-buffer)
+   ("<leader> pc" . project-compile)
+   ("<leader> ps" . project-shell)
+   ("<leader> pe" . project-eshell)
+   ("<leader> pf" . project-find-file)
+   ("<leader> pk" . project-kill-buffers)
+   ("<leader> p&" . project-async-shell-command)))
+
+(use-package breadcrumb
+  :ensure t
+  :hook (prog-mode . breadcrumb-mode))
+
+(use-package transient
+  :defer t
+  :config
+  (setq transient-show-popup 0.2))
+
+(use-package magit
+  :ensure t
+  :bind
+  (("<leader> gg" . magit-status)))
+
+(use-package org
+  :ensure nil
+  :init
+  (setq ord-directory (expand-file-name "~/Documents/Org"))
+  :bind
+  (("<localleader> t" . org-insert-structure-template)
+   :map org-mode-map
+	("C-'" . nil)
+	("C-," . nil)
+	("M-;" . nil)
+	("C-c ;" . nil))
+  :config
+  (setq org-ellipsis "⮧")
+  (setq org-adapt-indentation nil)
+  (setq org-special-ctrl-a/e nil)
+  (setq org-special-ctrl-k nil)
+  (setq org-confirm-babel-evaluate nil)
+  (setq org-src-window-setup 'current-window)
+  (setq org-edit-src-persistent-message nil)
+  (setq org-src-fontify-natively t)
+  (setq org-src-preserve-indentation t)
+  (setq org-src-tab-acts-natively t)
+  (setq org-edit-src-content-indentation 0)
+  (setq org-export-with-toc t)
+  (setq org-export-headline-levels 8)
+  (setq org-structure-template-alist
+	'(("e" . "src emacs-lisp")
+	  ("x" . "export")
+	  ("q" . "quote"))))
+
+(use-package denote
+  :ensure t
+  :hook
+  ((text-mode . denote-fontify-links-mode-maybe)
+   (dired-mode . denote-dired-mode))
+  :config
+  (setq denote-directory (expand-file-name "notes" org-directory))
+  (setq denote-known-keywords '("emacs" "programming" "algorithm" "datastructure"
+                                "pattern" "math" "art" "music"
+                                "film" "book" "philosophy" "meta"
+                                "linux" "windows" "fitness"))
+  (setq denote-infer-keywords t)
+  (setq denote-sort-keywords t)
+  :bind
+  (("<leader> nn" . denote)
+   ("<leader> nN" . denote-type)
+   ("<leader> nr" . denote-rename-file)
+   ("<leader> nR" . denote-rename-file-using-front-matter)
+   ("<leader> ni" . denote-link)
+   ("<leader> nI" . denote-add-links)
+   ("<leader> nb" . denote-backlinks)))
+
+(use-package denote-consult
+  :ensure t
+  :bind
+  (("<leader> nf" . consult-denote-find)
+   ("<leader> ng" . consult-denote-grep))
+  :config
+  (consult-denote-mode 1))
 
 (provide 'init)
 ;;; init.el ends here
