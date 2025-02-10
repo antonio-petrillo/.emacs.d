@@ -2,7 +2,8 @@
 ;;; Commentary: Emacs init file
 
 (defvar elpaca-installer-version 0.9)
-(defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
+(defvar elpaca-directory (expand-file-name "elpaca/" nto-cache))
+;; (defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
 (defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
 (defvar elpaca-repos-directory (expand-file-name "repos/" elpaca-directory))
 (defvar elpaca-order '(elpaca :repo "https://github.com/progfolio/elpaca.git"
@@ -514,7 +515,7 @@ of delete the previous word."
    ("<leader> <tab>r" . tab-rename)
    ("<leader> <tab>b" . switch-to-buffer-other-tab)
    ("<leader> <tab>d" . dired-other-tab)))
-  
+
 (use-package project
   :ensure nil
   :bind
@@ -532,6 +533,7 @@ of delete the previous word."
   :hook (prog-mode . breadcrumb-mode))
 
 (use-package transient
+  :ensure t
   :defer t
   :config
   (setq transient-show-popup 0.2))
@@ -548,10 +550,10 @@ of delete the previous word."
   :bind
   (("<localleader> t" . org-insert-structure-template)
    :map org-mode-map
-	("C-'" . nil)
-	("C-," . nil)
-	("M-;" . nil)
-	("C-c ;" . nil))
+   ("C-'" . nil)
+   ("C-," . nil)
+   ("M-;" . nil)
+   ("C-c ;" . nil))
   :config
   (setq org-ellipsis "⮧")
   (setq org-adapt-indentation nil)
@@ -577,7 +579,7 @@ of delete the previous word."
   ((text-mode . denote-fontify-links-mode-maybe)
    (dired-mode . denote-dired-mode))
   :config
-  (setq denote-directory (expand-file-name "notes" org-directory))
+  (setq denote-directory "~/Documents/Org/notes")
   (setq denote-known-keywords '("emacs" "programming" "algorithm" "datastructure"
                                 "pattern" "math" "art" "music"
                                 "film" "book" "philosophy" "meta"
@@ -593,7 +595,7 @@ of delete the previous word."
    ("<leader> nI" . denote-add-links)
    ("<leader> nb" . denote-backlinks)))
 
-(use-package denote-consult
+(use-package consult-denote
   :ensure t
   :bind
   (("<leader> nf" . consult-denote-find)
