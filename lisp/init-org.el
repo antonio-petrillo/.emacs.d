@@ -32,6 +32,8 @@
 
 (use-package org-modern
   :ensure t
+  :custom
+  (org-modern-table nil)
   :hook ((org-mode . org-modern-mode)
 	 (org-agenda-finalize . org-modern-agenda)))
 

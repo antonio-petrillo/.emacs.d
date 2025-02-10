@@ -4,7 +4,7 @@
   :ensure nil
   :commands (dired)
   :custom 
-  (dired-listing-switches "-agho --group-directories-first")
+  (dired-listing-switches "-aghol --group-directories-first")
   :hook
   ((dired-mode . dired-hide-details-mode)
    (dired-mode . hl-line-mode))
@@ -21,9 +21,9 @@
   (:map dired-mode-map
         ("<tab>" . dired-subtree-toggle)
         ("TAB" . dired-subtree-toggle)
+	("SPC" . nil)
         ("<backtab>" . dired-subtree-remove)
-        ("S-TAB" . dired-subtree-remove)
-	)
+        ("S-TAB" . dired-subtree-remove))
   :config
   (setq dired-subtree-use-backgrounds nil))
 

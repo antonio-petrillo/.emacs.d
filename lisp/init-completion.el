@@ -81,6 +81,7 @@
    ("<leader> jC" . consult-goto-line)
 
    ("<leader> fg" . consult-ripgrep)
+   ("<leader> /" . consult-ripgrep)
    ("<leader> fh" . consult-mode-command)
    ("<leader> ff" . consult-find)
    ("<leader> fl" . consult-locate)

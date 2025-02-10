@@ -30,4 +30,8 @@
   :hook
   (dired-mode . nerd-icons-dired-mode))
 
+(use-package rainbow-mode
+  :ensure t
+  :commands (rainbow-mode))
+
 (provide 'init-ui)

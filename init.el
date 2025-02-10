@@ -17,4 +17,6 @@
 (require 'init-proj)
 (require 'init-text-goodies)
 (require 'init-snippets)
+(require 'init-themes)
+
 (require 'emacs-lisp-setup)
