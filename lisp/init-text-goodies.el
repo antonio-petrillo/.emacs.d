@@ -34,4 +34,12 @@
   :config
   (setq markdown-fontify-code-blocks-natively t))
 
+(use-package drag-stuff
+  :ensure t
+  :bind
+  (("M-j" . drag-stuff-down)
+   ("M-k" . drag-stuff-up))
+  :init
+  (drag-stuff-global-mode 1))
+
 (provide 'init-text-goodies)
