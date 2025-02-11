@@ -2,7 +2,6 @@
 ;;; Commentary: Emacs init file
 
 (add-to-list 'load-path "lisp")
-(add-to-list 'load-path "lisp/experiments/")
 
 (require 'init-elpaca-bootstrap)
 (require 'init-emacs)
@@ -19,6 +18,7 @@
 (require 'init-snippets)
 (require 'init-themes)
 (require 'init-fonts)
+(require 'init-strokes)
 
 (require 'init-prog)
 (with-eval-after-load 'init-prog

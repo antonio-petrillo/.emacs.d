@@ -44,8 +44,14 @@ of delete the previous word."
 
 (use-package emacs
   :ensure nil
+  :custom
+  (strokes-file (expand-file-name "strokes" nto-cache))
   :config 
   (setq hl-line-sticky-flag nil)
+  (setq mouse-drag-and-drop-region t)
+  (setq mouse-drag-and-drop-region-cross-program t)
+  (setq mouse-autoselect-window t)
+  (setq strokes-use-strokes-buffer nil)
   :init
   (add-hook 'prog-mode-hook (lambda () 
 			      (display-line-numbers-mode 1)
@@ -56,6 +62,8 @@ of delete the previous word."
   (define-key global-map (kbd "C-g") #'nto/keyboard-quit-dwim)
   (define-key global-map (kbd "<esc>") #'nto/keyboard-quit-dwim)
   (define-key global-map (kbd "<escape>") #'nto/keyboard-quit-dwim)
+
+  (global-set-key (kbd "M-<down-mouse-1>") 'strokes-do-stroke)
 
   (global-hl-line-mode)
   (load-theme 'modus-vivendi))
