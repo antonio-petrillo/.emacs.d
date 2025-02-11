@@ -65,6 +65,9 @@ of delete the previous word."
 
   (global-set-key (kbd "M-<down-mouse-1>") 'strokes-do-stroke)
 
+  (global-set-key (kbd "C-=") 'text-scale-increase)
+  (global-set-key (kbd "C--") 'text-scale-decrease)
+
   (global-hl-line-mode)
   (load-theme 'modus-vivendi))
 
