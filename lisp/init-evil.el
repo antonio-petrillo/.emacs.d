@@ -24,6 +24,7 @@
   (setq evil-split-window-right t)
   (setq evil-want-fine-undo t)
   (setq evil-kill-on-visual-paste nil)
+
   (define-key evil-insert-state-map (kbd "C-n") nil)
   (define-key evil-insert-state-map (kbd "C-p") nil)
   (define-key evil-insert-state-map (kbd "C-q") nil)

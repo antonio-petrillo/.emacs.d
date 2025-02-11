@@ -31,10 +31,6 @@
 (setq gc-cons-threshold most-positive-fixnum
       gc-cons-percentage 0.5)
 
-;; Same idea as above for the `file-name-handler-alist' and the
-;; `vc-handled-backends' with regard to startup speed optimisation.
-;; Here I am storing the default value with the intent of restoring it
-;; via the `emacs-startup-hook'.
 (defvar nto/file-name-handler-alist file-name-handler-alist)
 (defvar nto/vc-handled-backends vc-handled-backends)
 

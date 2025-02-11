@@ -2,6 +2,7 @@
 
 (use-package zig-mode
   :ensure t
+  :hook (zig-mode . eglot-ensure)
   :config
   (setq zig-format-on-save t)
   (evil-define-key nil zig-mode-map

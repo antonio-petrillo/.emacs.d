@@ -4,14 +4,16 @@
   :ensure nil
   :commands (dired)
   :custom 
-  (dired-listing-switches "-aghol --group-directories-first")
+  (dired-listing-switches "-aghl -v --group-directories-first")
   :hook
-  ((dired-mode . dired-hide-details-mode)
+ k ((dired-mode . dired-hide-details-mode)
    (dired-mode . hl-line-mode))
   :config
   (setq dired-recursive-copies 'always)
   (setq dired-recursive-deletes 'always)
   (setq delete-by-moving-to-trash t)
+  (setq dired-mouse-drag-files t)
+  (setq dired-make-directory-clickable t)
   (setq dired-dwim-target t))
 
 (use-package dired-subtree
@@ -26,13 +28,6 @@
         ("S-TAB" . dired-subtree-remove))
   :config
   (setq dired-subtree-use-backgrounds nil))
-
-;; (with-eval-after-load 'evil-collection
-;;   (evil-collection-define-key 'normal 'dired-mode-map
-;;     " " nil ;; damned evil collection, it binds a billion keys!
-;;     "h" #'dired-up-directory
-;;     "l" #'dired-find-file)
-;;   )
 
 (use-package trashed
   :ensure t

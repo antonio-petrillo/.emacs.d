@@ -1,11 +1,5 @@
 ;;; init-ui.el -*- lexical-binding: t; -*-
 
-(let ((mono-spaced-font "Monospace")
-      (proportionately-spaced-font "Sans"))
-  (set-face-attribute 'default nil :family mono-spaced-font :height 100)
-  (set-face-attribute 'fixed-pitch nil :family mono-spaced-font :height 1.0)
-  (set-face-attribute 'variable-pitch nil :family proportionately-spaced-font :height 1.0))
-
 (use-package breadcrumb
   :ensure t
   :hook (prog-mode . breadcrumb-mode))
@@ -33,5 +27,28 @@
 (use-package rainbow-mode
   :ensure t
   :commands (rainbow-mode))
+
+(use-package rainbow-delimiters
+  :ensure t
+  :hook (prog-mode . rainbow-delimiters-mode))
+
+(use-package pulsar
+  :ensure t
+  :config
+  (setopt pulsar-pulse t
+          pulsar-delay 0.055
+          pulsar-iterations 10
+          pulsar-face 'pulsar-green
+          pulsar-highlight-face 'pulsar-magenta)
+
+  (pulsar-global-mode 1))
+
+(use-package doom-modeline
+  :ensure t
+  :hook (elpaca-after-init . doom-modeline-mode)
+  :hook (doom-modeline-mode . size-indication-mode)
+  :hook (doom-modeline-mode . column-number-mode)
+  :config
+  (setq doom-modeline-lsp-icon nil))
 
 (provide 'init-ui)

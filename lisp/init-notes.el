@@ -15,6 +15,7 @@
   (setq denote-sort-keywords t)
   :bind
   (("<leader> nn" . denote)
+   ("<leader> nf" . denote-open-or-create)
    ("<leader> nN" . denote-type)
    ("<leader> nr" . denote-rename-file)
    ("<leader> nR" . denote-rename-file-using-front-matter)
@@ -25,7 +26,7 @@
 (use-package consult-denote
   :ensure t
   :bind
-  (("<leader> nf" . consult-denote-find)
+  (("<leader> nF" . consult-denote-find)
    ("<leader> ng" . consult-denote-grep))
   :config
   (consult-denote-mode 1))

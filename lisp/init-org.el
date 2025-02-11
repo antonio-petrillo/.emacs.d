@@ -2,6 +2,8 @@
 
 (use-package org
   :ensure nil
+  :hook
+  (org-mode . variable-pitch-mode)
   :init
   (setq ord-directory (expand-file-name "~/Documents/Org"))
   :bind
