@@ -50,7 +50,7 @@ of delete the previous word."
   (setq hl-line-sticky-flag nil)
   (setq mouse-drag-and-drop-region t)
   (setq mouse-drag-and-drop-region-cross-program t)
-  (setq mouse-autoselect-window t)
+  (setq mouse-autoselect-window nil)
   (setq strokes-use-strokes-buffer nil)
   :init
   (add-hook 'prog-mode-hook (lambda () 

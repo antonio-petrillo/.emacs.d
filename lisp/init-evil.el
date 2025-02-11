@@ -25,6 +25,8 @@
   (setq evil-want-fine-undo t)
   (setq evil-kill-on-visual-paste nil)
 
+  (evil-set-initial-state 'calc-mode 'emacs)
+
   (define-key evil-insert-state-map (kbd "C-n") nil)
   (define-key evil-insert-state-map (kbd "C-p") nil)
   (define-key evil-insert-state-map (kbd "C-q") nil)

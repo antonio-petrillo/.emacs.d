@@ -33,4 +33,14 @@
    ("<leader> je" . avy-goto-end-of-line)
    ("<leader> jw" . avy-goto-word-0)))
 
+(use-package demap
+  :ensure (:host gitlab :repo "sawyerjgardner/demap.el")
+  :commands (demap-toggle)
+  :config
+  (setq demap-minimap-window-side 'right)
+  (setq demap-minimap-window-width 20)
+  (setq demap-minimap-window-width 20)
+  :bind
+  (("<leader> tm" . demap-toggle)))
+
 (provide 'init-jumps)
