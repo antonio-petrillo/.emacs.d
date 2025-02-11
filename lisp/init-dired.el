@@ -27,10 +27,12 @@
   :config
   (setq dired-subtree-use-backgrounds nil))
 
-(with-eval-after-load 'evil-collection
-  (evil-collection-define-key 'normal 'dired-mode-map
-    "h" #'dired-up-directory
-    "l" #'dired-find-file))
+;; (with-eval-after-load 'evil-collection
+;;   (evil-collection-define-key 'normal 'dired-mode-map
+;;     " " nil ;; damned evil collection, it binds a billion keys!
+;;     "h" #'dired-up-directory
+;;     "l" #'dired-find-file)
+;;   )
 
 (use-package trashed
   :ensure t

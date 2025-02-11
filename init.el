@@ -20,3 +20,7 @@
 (require 'init-themes)
 
 (require 'emacs-lisp-setup)
+(require 'go-setup)
+(require 'odin-setup)
+(require 'zig-setup)
+(require 'ocaml-setup)

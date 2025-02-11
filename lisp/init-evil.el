@@ -50,7 +50,7 @@
     (kbd "<leader> hv") #'describe-variable
     (kbd "<leader> hf") #'describe-function
     (kbd "<leader> hc") #'describe-command
-    (kbd "<leader> hm") #'describe-map
+    (kbd "<leader> hm") #'describe-keymap
 
     (kbd "<leader> .") #'find-file
     (kbd "<leader> fs") #'save-buffer
@@ -72,13 +72,33 @@
     (kbd "<leader> wl") #'evil-window-right
     (kbd "<leader> w1") #'delete-other-windows
     (kbd "<leader> w0") #'delete-window
-    (kbd "<leader> wo") #'other-window))
+    (kbd "<leader> wo") #'other-window)
+
+  (evil-define-key nil 'global
+    (kbd "C-a") #'beginning-of-line
+    (kbd "C-e") #'end-of-line
+    (kbd "C-f") #'forward-char
+    (kbd "C-b") #'backward-char
+    (kbd "C-p") #'previous-line
+    (kbd "C-n") #'next-line
+    (kbd "C-d") #'delete-char))
 
 (use-package evil-collection
   :ensure t
   :after evil
   :config
   (evil-collection-init))
+
+(with-eval-after-load 'evil-collection
+  ;; damned evil collection, it binds a billion keys!
+  (evil-collection-define-key 'normal 'dired-mode-map
+    " " nil
+    "h" #'dired-up-directory
+    "l" #'dired-find-file)
+  (evil-collection-define-key 'normal 'Info-mode-map
+    " " nil)
+  (evil-collection-define-key 'normal 'help-mode-map
+    " " nil))
 
 (use-package evil-escape
   :ensure t
@@ -165,6 +185,12 @@
     (evil-define-key '(multiedit multiedit-insert) 'global
       (kbd "C-n")   #'evil-multiedit-next
       (kbd "C-p")   #'evil-multiedit-prev)))
+
+(use-package evil-goggles
+  :ensure t
+  :config
+  (evil-goggles-mode)
+  (evil-goggles-use-diff-faces))
 
 (provide 'init-evil)
 ;;; init-evil.el ends here
