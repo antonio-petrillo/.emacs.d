@@ -9,6 +9,7 @@
 (load custom-file :no-error-if-file-is-missing)
 
 (setq make-backup-files nil)
+(setq create-lockfiles nil)
 
 (setq package-enable-at-startup nil)
 (setq evil-want-keybinding nil)
@@ -39,7 +40,7 @@
 
 (add-hook 'emacs-startup-hook
           (lambda ()
-            (setq gc-cons-threshold (* 1000 1000 8)
+            (setq gc-cons-threshold (* 16 1024 1024)
                   gc-cons-percentage 0.1
                   file-name-handler-alist nto/file-name-handler-alist
                   vc-handled-backends nto/vc-handled-backends)))

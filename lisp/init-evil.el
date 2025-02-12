@@ -3,7 +3,7 @@
 (use-package undo-tree
   :ensure t
   :custom
-  (undo-tree-history-directory-alist `(("." . ,(concat nto-cache "undo-tree-hist/"))))
+  (undo-tree-history-directory-alist `(("." . ,(expand-file-name "undo-tree-hist/" nto-cache))))
   :init
   (global-undo-tree-mode))
 
@@ -70,10 +70,12 @@
     (kbd "<leader> wv") #'evil-window-vsplit
     (kbd "<leader> wc") #'evil-window-delete
     (kbd "<leader> wh") #'evil-window-left
+    (kbd "<leader> wM") #'toggle-frame-maximized
     (kbd "<leader> wj") #'evil-window-down
     (kbd "<leader> wk") #'evil-window-up
     (kbd "<leader> wl") #'evil-window-right
     (kbd "<leader> w1") #'delete-other-windows
+    (kbd "<leader> wm") #'delete-other-windows
     (kbd "<leader> w0") #'delete-window
     (kbd "<leader> wo") #'other-window)
 
@@ -86,12 +88,6 @@
     (kbd "C-n") #'next-line
     (kbd "C-d") #'delete-char))
 
-(use-package evil-collection
-  :ensure t
-  :after evil
-  :config
-  (evil-collection-init))
-
 (with-eval-after-load 'evil-collection
   ;; damned evil collection, it binds a billion keys!
   (evil-collection-define-key 'normal 'dired-mode-map
@@ -102,6 +98,12 @@
     " " nil)
   (evil-collection-define-key 'normal 'help-mode-map
     " " nil))
+
+(use-package evil-collection
+  :ensure t
+  :after evil
+  :config
+  (evil-collection-init))
 
 (use-package evil-escape
   :ensure t
