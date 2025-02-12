@@ -1,7 +1,18 @@
 ;;; init.el -*- lexical-binding: t; -*-
 ;;; Commentary: Emacs init file
 
-(add-to-list 'load-path "lisp")
+(add-to-list 'load-path (expand-file-name "lisp/" user-emacs-directory))
+
+(defun nto/display-startup-time ()
+  (message
+   "Emacs loaded in %s with %d garbage collections."
+   (format
+    "%.2f seconds"
+    (float-time
+     (time-subtract after-init-time before-init-time)))
+   gcs-done))
+
+(add-hook 'emacs-startup-hook #'nto/display-startup-time)
 
 (require 'init-elpaca-bootstrap)
 (require 'init-emacs)

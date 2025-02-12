@@ -195,5 +195,11 @@
   (evil-goggles-mode)
   (evil-goggles-use-diff-faces))
 
+(use-package evil-traces
+  :ensure t
+  :config
+  (evil-traces-use-diff-faces) 
+  (evil-traces-mode))
+
 (provide 'init-evil)
 ;;; init-evil.el ends here
