@@ -7,8 +7,7 @@
   :functions (eglot-ensure)
   :commands (eglot)
   :config
-  (setq eglot-autoshutdown t)
-  )
+  (setq eglot-autoshutdown t))
 
 (defun nto/enable-languages (languages)
   (dolist (lang languages)

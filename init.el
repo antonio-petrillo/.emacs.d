@@ -24,6 +24,7 @@
 (with-eval-after-load 'init-prog
   (nto/enable-languages
    '(emacs-lisp
+     clojure
      go
      odin
      zig

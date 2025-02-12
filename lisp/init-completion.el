@@ -11,6 +11,8 @@
 
 (use-package vertico
   :ensure t
+  :custom
+  (vertico-cycle t)
   :hook (elpaca-after-init . vertico-mode))
 
 (use-package marginalia

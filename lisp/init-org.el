@@ -7,8 +7,7 @@
   :init
   (setq ord-directory (expand-file-name "~/Documents/Org"))
   :bind
-  (("<localleader> t" . org-insert-structure-template)
-   :map org-mode-map
+  (:map org-mode-map
    ("C-'" . nil)
    ("C-," . nil)
    ("M-;" . nil)

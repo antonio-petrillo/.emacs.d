@@ -4,7 +4,8 @@
   :ensure t
   :hook
   ((text-mode . denote-fontify-links-mode-maybe)
-   (dired-mode . denote-dired-mode))
+   (dired-mode . denote-dired-mode)
+   (markdown-mode . denote-dired-mode))
   :config
   (setq denote-directory "~/Documents/Org/notes")
   (setq denote-known-keywords '("emacs" "programming" "algorithm" "datastructure"
