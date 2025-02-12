@@ -8,10 +8,10 @@
   (setq ord-directory (expand-file-name "~/Documents/Org"))
   :bind
   (:map org-mode-map
-   ("C-'" . nil)
-   ("C-," . nil)
-   ("M-;" . nil)
-   ("C-c ;" . nil))
+	("C-'" . nil)
+	("C-," . nil)
+	("M-;" . nil)
+	("C-c ;" . nil))
   :config
   (setq org-ellipsis "⮧")
   (setq org-adapt-indentation nil)

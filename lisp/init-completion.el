@@ -13,11 +13,26 @@
   :ensure t
   :custom
   (vertico-cycle t)
+  (vertico-count 12)
   :hook (elpaca-after-init . vertico-mode))
+
+(use-package vertico-mouse
+  :ensure nil
+  :after vertico
+  :hook (vertico-mode . vertico-mouse-mode))
 
 (use-package marginalia
   :ensure t
-  :hook (elpaca-after-init . marginalia-mode))
+  :hook (elpaca-after-init . marginalia-mode)
+  :bind
+  (:map minibuffer-local-map
+	("M-A" . marginalia-cycle)))
+
+(defun nto/match-components-literally ()
+  "Components match literally for the rest of the session."
+  (interactive)
+  (setq-local orderless-matching-styles '(orderless-literal)
+              orderless-style-dispatchers nil))
 
 (use-package orderless
   :ensure t
