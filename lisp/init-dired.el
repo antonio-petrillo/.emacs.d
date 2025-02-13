@@ -6,7 +6,7 @@
   :custom 
   (dired-listing-switches "-aghl -v --group-directories-first")
   :hook
- k ((dired-mode . dired-hide-details-mode)
+  ((dired-mode . dired-hide-details-mode)
    (dired-mode . hl-line-mode))
   :config
   (setq dired-recursive-copies 'always)
@@ -28,6 +28,14 @@
         ("S-TAB" . dired-subtree-remove))
   :config
   (setq dired-subtree-use-backgrounds nil))
+
+(use-package dired-hide-dotfiles;
+  :ensure t
+  :after (dired evil-collection)
+  :hook (dired-mode . dired-hide-dotfiles-mode)
+  :bind
+  (:map dired-mode-map
+        ("C-h" . dired-hide-dotfiles-mode)))
 
 (use-package trashed
   :ensure t
