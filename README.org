@@ -1,0 +1,14 @@
+#+AUTHOR: Antonio Petrillo
+#+TITLE: Emacs Config
+
+* To setup [0/3]
++ [ ] csv, json, yaml, edn ....
++ [ ] org-agenda
++ [ ] docker
++ [ ] c-mode
++ [ ] tramp
++ [ ] eshell (avoid vterm!)
++ [ ] (MAYBE) eat shell
++ [ ] org-mode exporters
++ [ ] org-mode code block lang
++ [ ] java, just basic conf no lsp for this shit

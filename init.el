@@ -30,6 +30,7 @@
 (require 'init-themes)
 (require 'init-fonts)
 (require 'init-strokes)
+(require 'init-eshell)
 
 (require 'init-prog)
 (with-eval-after-load 'init-prog
