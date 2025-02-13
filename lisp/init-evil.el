@@ -45,9 +45,12 @@
   (evil-set-leader 'operator (kbd "<leader> m") t)
   (evil-set-leader 'replace (kbd "<leader> m") t)
   (evil-set-leader 'motion (kbd "<leader> m") t)
-  (evil-set-leader 'insert (kbd "<leader> m") t))
+  (evil-set-leader 'insert (kbd "<leader> m") t)
 
-(with-eval-after-load 'evil
+  (evil-define-key 'normal dired-mode-map
+    (kbd "h") #'dired-up-directory
+    (kbd "l") #'dired-find-file)
+
   (evil-define-key nil 'global
     (kbd "<leader> hk") #'describe-key
     (kbd "<leader> hv") #'describe-variable
@@ -88,22 +91,19 @@
     (kbd "C-n") #'next-line
     (kbd "C-d") #'delete-char))
 
-(with-eval-after-load 'evil-collection
-  ;; damned evil collection, it binds a billion keys!
-  (evil-collection-define-key 'normal 'dired-mode-map
-    " " nil
-    "h" #'dired-up-directory
-    "l" #'dired-find-file)
-  (evil-collection-define-key 'normal 'Info-mode-map
-    " " nil)
-  (evil-collection-define-key 'normal 'help-mode-map
-    " " nil))
-
 (use-package evil-collection
   :ensure t
   :after evil
-  :config
+  :init
   (evil-collection-init))
+
+(with-eval-after-load 'evil-collection
+  (setq evil-collection-key-blacklist
+        (append '("SPC" "C-SPC" "SPC m" "C-SPC m")
+                evil-collection-key-blacklist
+		'("gd" "gf" "K")
+                '("gr" "gR")
+                '("[" "]" "gz"))))
 
 (use-package evil-escape
   :ensure t

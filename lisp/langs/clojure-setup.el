@@ -51,6 +51,7 @@
 
 (use-package clj-refactor
   :ensure t
+  :after clojure
   :hook (clojure-mode . clj-refactor-mode)
   :config
   (evil-define-key nil clojure-mode-map
@@ -58,6 +59,7 @@
 
 (use-package cider
   :ensure t
+  :after clojure
   :config 
   (setq nrepl-hide-special-buffers t
         nrepl-log-messages nil

@@ -1,6 +1,6 @@
 ;;; init-prog.el -*- lexical-binding: t; -*-
 
-(add-to-list 'load-path "lisp/langs/")
+(add-to-list 'load-path (expand-file-name "lisp/langs/" user-emacs-directory))
 
 (use-package eglot
   :ensure nil
