@@ -1,10 +1,5 @@
 ;;; clojure-setup.el -*- lexical-binding: t; -*-
 
-;; DEPS:
-;; - clj-kondo
-;; - cljfmt
-;; - neil
-
 (use-package paredit
   :ensure t)
 
@@ -91,3 +86,4 @@
         (kbd "<localleader> f")  #'neil-find-clojure-package))
 
 (provide 'clojure-setup)
+;;; clojure-setup.el ends here

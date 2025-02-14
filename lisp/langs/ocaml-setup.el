@@ -10,3 +10,4 @@
   :ensure t)
 
 (provide 'ocaml-setup)
+;;; ocaml-setup.el ends here

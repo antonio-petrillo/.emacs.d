@@ -1,5 +1,4 @@
 ;;; init.el -*- lexical-binding: t; -*-
-;;; Commentary: Emacs init file
 
 (add-to-list 'load-path (expand-file-name "lisp/" user-emacs-directory))
 
@@ -31,8 +30,8 @@
 (require 'init-fonts)
 (require 'init-strokes)
 (require 'init-eshell)
-
 (require 'init-prog)
+
 (with-eval-after-load 'init-prog
   (nto/enable-languages
    '(emacs-lisp
@@ -41,3 +40,5 @@
      odin
      zig
      ocaml)))
+
+;;; init.el ends here

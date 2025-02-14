@@ -32,12 +32,6 @@
   (("<leader> wu" . winner-undo)
    ("<leader> wr" . winner-redo)))
 
-(use-package golden-ratio
-  :ensure (:host github :repo "roman/golden-ratio.el")
-  :config
-  (setq golden-ratio-adjust-factor .8
-      golden-ratio-wide-adjust-factor .8))
-
 (use-package spacious-padding
   :ensure t
   :hook ((org-mode text-mode) . spacious-padding-mode)
@@ -60,3 +54,4 @@
            :mode-line-inactive spacious-padding-subtle-mode-line-inactive)))
 
 (provide 'init-windows)
+;;; lisp/init-windows.el ends here

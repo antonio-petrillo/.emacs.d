@@ -24,7 +24,6 @@ The DWIM behaviour of this command is as follows:
    (t
     (keyboard-quit))))
 
-;; kill word hack
 (defun nto/backward-kill-word()
   "Same as `backward-kill-word' but if it is invoked on a white space character
 at the beginning of the line it will stop at it, furthermore if it is invoked
@@ -46,12 +45,11 @@ of delete the previous word."
   :ensure nil
   :custom
   (strokes-file (expand-file-name "strokes" nto-cache))
-  :config 
-  (setq hl-line-sticky-flag nil)
-  (setq mouse-drag-and-drop-region t)
-  (setq mouse-drag-and-drop-region-cross-program t)
-  (setq mouse-autoselect-window nil)
-  (setq strokes-use-strokes-buffer nil)
+  (hl-line-sticky-flag nil)
+  (mouse-drag-and-drop-region t)
+  (mouse-drag-and-drop-region-cross-program t)
+  (mouse-autoselect-window nil)
+  (strokes-use-strokes-buffer nil)
   :init
   (add-hook 'prog-mode-hook (lambda () 
 			      (display-line-numbers-mode 1)
@@ -78,18 +76,7 @@ of delete the previous word."
   :ensure nil
   :hook (elpaca-after-init . delete-selection-mode))
 
-(use-package electric
-  :ensure nil
-  :hook
-  (prog-mode . electric-pair-mode)
-  :config
-  (setq electric-pair-pairs '((?\{ . ?\})
-			      (?\[ . ?\])
-			      (?\( . ?\))
-			      (?\" . ?\"))))
-
 (use-package tab-bar
-  :after evil
   :bind
   (("<leader> <tab>s" . tab-switch)
    ("<leader> <tab><tab>" . tab-switch)
@@ -100,3 +87,4 @@ of delete the previous word."
    ("<leader> <tab>d" . dired-other-tab)))
 
 (provide 'init-emacs)
+;;; lisp/init-emacs.el ends here

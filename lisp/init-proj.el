@@ -24,3 +24,6 @@
   (("<leader> gg" . magit-status)))
 
 (provide 'init-proj)
+;;; init-proj.el ends here
+
+;;; init-text-goodies.el -*- lexical-binding: t; -*-

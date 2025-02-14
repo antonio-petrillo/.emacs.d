@@ -1,4 +1,10 @@
+;;; early-init.el --- Doom's universal bootstrapper -*- lexical-binding: t -*-
+
 (defvar nto-cache (file-name-concat (getenv "HOME") ".config/nto.d"))
+
+(unless (file-exists-p nto-cache)
+  (make-directory nto-cache t))
+
 (startup-redirect-eln-cache (expand-file-name "eln" nto-cache))
 (setq package-user-dir (expand-file-name "elpa" nto-cache))
 
@@ -14,11 +20,13 @@
 (setq package-enable-at-startup nil)
 (setq evil-want-keybinding nil)
 (setq use-short-answers t)
-(setq inhibit-splash-screen t)
-(setq inhibit-startup-screen t)
 (setq ring-bell-function 'ignore)
 
-(add-to-list 'default-frame-alist
+(setq inhibit-splash-screen t)
+(setq-default truncate-lines t)
+(setq inhibit-startup-screen t)
+
+(add-to-list 'default-frame-alist 
              '(menu-bar-lines . 0))
 (add-to-list 'default-frame-alist
              '(tool-bar-lines . 0))
@@ -45,4 +53,4 @@
                   file-name-handler-alist nto/file-name-handler-alist
                   vc-handled-backends nto/vc-handled-backends)))
 
-(setq-default truncate-lines t)
+;;; early-init.el ends here

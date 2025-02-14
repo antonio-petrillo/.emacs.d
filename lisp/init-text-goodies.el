@@ -1,5 +1,3 @@
-;;; init-text-goodies.el -*- lexical-binding: t; -*-
-
 (use-package rotate-text
   :ensure (:host github :repo "debug-ito/rotate-text.el")
   :after evil
@@ -7,7 +5,6 @@
   (evil-define-key 'normal 'global
     (kbd "]r") #'rotate-text
     (kbd "[r") #'rotate-text-backward))
-
 
 (use-package google-translate
   :ensure t
@@ -43,3 +40,4 @@
   (drag-stuff-global-mode 1))
 
 (provide 'init-text-goodies)
+;;; init-text-goodies.el ends here

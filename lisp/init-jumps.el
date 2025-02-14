@@ -4,7 +4,10 @@
   :ensure t
   :after evil
   :bind
-  (("<leader> ww" . ace-window))
+  (("<leader> ww" . ace-window)
+   ("<leader> wS" . ace-swap-window)
+   ("<leader> w C-w" . ace-swap-window)
+   ("<leader> wx" . ace-delete-window))
   :config
   (setq aw-background nil)
   (setq aw-dispatch-always t)
@@ -44,3 +47,4 @@
   (("<leader> tm" . demap-toggle)))
 
 (provide 'init-jumps)
+;;; init-jumps.el ends here

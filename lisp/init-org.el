@@ -5,14 +5,22 @@
   :hook
   (org-mode . variable-pitch-mode)
   :init
-  (setq ord-directory (expand-file-name "~/Documents/Org"))
+  (setq ord-directory (file-name-concat (getenv "HOME") "Documents/Org"))
   :bind
   (:map org-mode-map
 	("C-'" . nil)
 	("C-," . nil)
 	("M-;" . nil)
+	("M-l" . nil)
 	("C-c ;" . nil))
   :config
+  (add-hook 'org-mode-hook
+	    (lambda ()
+	      (setq-local electric-pair-inhibit-predicate
+			  `(lambda (c)
+			     (if (char-equal c ?<) t
+			       (,electric-pair-inhibit-predicate c))))))
+
   (setq org-ellipsis "⮧")
   (setq org-adapt-indentation nil)
   (setq org-special-ctrl-a/e nil)
@@ -25,11 +33,7 @@
   (setq org-src-tab-acts-natively t)
   (setq org-edit-src-content-indentation 0)
   (setq org-export-with-toc t)
-  (setq org-export-headline-levels 8)
-  (setq org-structure-template-alist
-	'(("e" . "src emacs-lisp")
-	  ("x" . "export")
-	  ("q" . "quote"))))
+  (setq org-export-headline-levels 8))
 
 (use-package org-modern
   :ensure t
@@ -39,3 +43,4 @@
 	 (org-agenda-finalize . org-modern-agenda)))
 
 (provide 'init-org)
+;;; init-org.el ends here

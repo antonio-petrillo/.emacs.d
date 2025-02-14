@@ -43,3 +43,4 @@
         (elpaca-use-package-mode))
 
 (provide 'init-elpaca-bootstrap)
+;;; init-elpaca-bootstrap.el ends here

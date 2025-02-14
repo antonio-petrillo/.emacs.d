@@ -1,5 +1,3 @@
-;;; init-evil.el -*- lexical-binding: t; -*-
-
 (use-package undo-tree
   :ensure t
   :custom
@@ -63,6 +61,7 @@
     (kbd "<leader> fd") #'dired 
 
     (kbd "<leader> bk") #'kill-this-buffer
+    (kbd "<leader> br") #'revert-buffer
 
     (kbd "<leader> bm") #'bookmark-set
     (kbd "<leader> bd") #'bookmark-delete

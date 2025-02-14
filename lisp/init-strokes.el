@@ -6,3 +6,4 @@
   (dired "~/Code"))
 
 (provide 'init-strokes)
+;;; init-strokes.el ends here

@@ -6,7 +6,7 @@
   (set-face-attribute
    'default nil
    :family mono-spaced-font
-   :height 140)
+   :height 120)
 
   (set-face-attribute
    'fixed-pitch nil
@@ -19,3 +19,4 @@
    :height 1.0))
 
 (provide 'init-fonts)
+;;; init-fonts.el ends here

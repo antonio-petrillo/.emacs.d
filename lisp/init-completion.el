@@ -41,36 +41,6 @@
   (setq completion-category-defaults nil)
   (setq completion-category-overrride nil))
 
-(use-package savehist
-  :ensure nil
-  :hook (elpaca-after-init . savehist-mode)
-  :config
-  (add-to-list 'savehist-additional-variables 'corfu-history))
-
-(use-package corfu
-  :ensure t
-  :hook (elpaca-after-init . global-corfu-mode)
-  :custom
-  (corfu-auto t)
-  :bind
-  (:map corfu-map
-        ("<tab>" . corfu-complete)
-        ("C-n" . corfu-next)
-        ("C-p" . corfu-previous)
-        ("C-M-SPC" . corfu-insert-separator)
-        ("C-q" . corfu-quick-complete))
-  :config
-  (setq corfu-cycle t)
-  (setq tab-always-indent 'complete)
-  (setq corfu-preview-current nil)
-  (setq corfu-min-width 20)
-  (setq corfu-popupinfo-delay '(1.25 . 0.5))
-  (corfu-popupinfo-mode 1) ; shows documentation after `corfu-popupinfo-delay'
-  (corfu-history-mode 1)
-  (with-eval-after-load 'savehist
-    (corfu-history-mode 1)
-    (add-to-list 'savehist-additional-variables 'corfu-history)))
-
 (use-package cape
   :ensure t
   :bind
@@ -109,6 +79,8 @@
 
    ("<leader> bb" . consult-buffer)
    ("<leader> bB" . consult-buffer-other-window)
+   ("<leader> b C-B" . consult-buffer-other-tab)
+   ("<leader> b M-B" . consult-buffer-other-frame)
 
    :map minibuffer-local-map
    ("M-s" . consult-history)

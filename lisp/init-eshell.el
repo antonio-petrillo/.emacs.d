@@ -1,5 +1,4 @@
 ;;; init-eshell.el -*- lexical-binding: t; -*-
-
 (use-package eshell
   :ensure nil
   :bind

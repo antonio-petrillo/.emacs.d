@@ -33,3 +33,4 @@
   (consult-denote-mode 1))
 
 (provide 'init-notes)
+;;; init-notes.el ends here

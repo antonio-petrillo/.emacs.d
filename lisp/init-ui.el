@@ -1,9 +1,5 @@
 ;;; init-ui.el -*- lexical-binding: t; -*-
 
-(use-package breadcrumb
-  :ensure t
-  :hook (prog-mode . breadcrumb-mode))
-
 (use-package nerd-icons
   :ensure t)
 
@@ -24,9 +20,14 @@
   :hook
   (dired-mode . nerd-icons-dired-mode))
 
+(use-package breadcrumb
+  :ensure t
+  :bind (("<leader> tb" . breadcrumb-local-mode)))
+
 (use-package rainbow-mode
   :ensure t
-  :commands (rainbow-mode))
+  :commands (rainbow-mode)
+  :hook (prog-mode . rainbow-mode))
 
 (use-package rainbow-delimiters
   :ensure t
@@ -40,7 +41,6 @@
           pulsar-iterations 10
           pulsar-face 'pulsar-green
           pulsar-highlight-face 'pulsar-magenta)
-
   (pulsar-global-mode 1))
 
 (use-package doom-modeline
@@ -52,3 +52,4 @@
   (setq doom-modeline-lsp-icon nil))
 
 (provide 'init-ui)
+;;; init-ui.el ends here

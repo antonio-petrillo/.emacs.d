@@ -1,5 +1,4 @@
 ;;; odin-setup.el -*- lexical-binding: t; -*-
-
 (use-package odin-mode
   :ensure (:host sourcehut :repo "mgmarlow/odin-mode")
   :hook (odin-mode . eglot-ensure)
@@ -14,4 +13,6 @@
   (add-to-list 'eglot-server-programs
                '(odin-mode . ("ols"))))
 
+
 (provide 'odin-setup)
+;;; odin-setup.el ends here

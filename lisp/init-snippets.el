@@ -18,3 +18,4 @@
   :ensure t)
 
 (provide 'init-snippets)
+;;; init-snippets.el ends here

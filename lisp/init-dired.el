@@ -47,3 +47,4 @@
   (setq trashed-date-format "%Y-%m-%d %H:%M:%S"))
 
 (provide 'init-dired)
+;;; init-dired.el ends here

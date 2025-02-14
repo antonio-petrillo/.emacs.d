@@ -12,3 +12,4 @@
     (kbd "<localleader> t") #'zig-test-buffer))
 
 (provide 'zig-setup)
+;;; zig-setup.el ends here
