@@ -749,6 +749,8 @@ Install ~evil-mode~, setup *leader* and *localleader* keys, also bind a gazillio
 
     (kbd "<leader> SPC") #'execute-extended-command
 
+    (kbd "<leader> tl") #'display-line-numbers-mode
+
     (kbd "<leader> ws") #'evil-window-split
     (kbd "<leader> wv") #'evil-window-vsplit
     (kbd "<leader> wc") #'evil-window-delete
@@ -1072,6 +1074,7 @@ Enhance the Org UI with /org-modern/.
 #+begin_src emacs-lisp :tangle "lisp/init-org.el"
 (use-package org-modern
   :ensure t
+  :after org
   :custom
   (org-modern-table nil)
   :hook ((org-mode . org-modern-mode)
@@ -1569,9 +1572,13 @@ Dependencies:
 
 #+begin_src emacs-lisp :tangle "lisp/langs/odin-setup.el"
 ;;; odin-setup.el -*- lexical-binding: t; -*-
+(defun nto/hs-minor-mode-disable-hook ()
+ (hs-minor-mode -1)) 
+
 (use-package odin-mode
   :ensure (:host sourcehut :repo "mgmarlow/odin-mode")
-  :hook (odin-mode . eglot-ensure)
+  :hook ((odin-mode . eglot-ensure)
+	 (odin-mode . nto/hs-minor-mode-disable))
   :config
   (evil-define-key nil go-mode-map 
     (kbd "<localleader> b")  #'odin-build-project

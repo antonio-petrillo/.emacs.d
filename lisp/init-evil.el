@@ -68,6 +68,8 @@
 
     (kbd "<leader> SPC") #'execute-extended-command
 
+    (kbd "<leader> tl") #'display-line-numbers-mode
+
     (kbd "<leader> ws") #'evil-window-split
     (kbd "<leader> wv") #'evil-window-vsplit
     (kbd "<leader> wc") #'evil-window-delete

@@ -1,7 +1,11 @@
 ;;; odin-setup.el -*- lexical-binding: t; -*-
+(defun nto/hs-minor-mode-disable-hook ()
+ (hs-minor-mode -1)) 
+
 (use-package odin-mode
   :ensure (:host sourcehut :repo "mgmarlow/odin-mode")
-  :hook (odin-mode . eglot-ensure)
+  :hook ((odin-mode . eglot-ensure)
+	 (odin-mode . nto/hs-minor-mode-disable))
   :config
   (evil-define-key nil go-mode-map 
     (kbd "<localleader> b")  #'odin-build-project

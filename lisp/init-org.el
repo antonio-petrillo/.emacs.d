@@ -37,6 +37,7 @@
 
 (use-package org-modern
   :ensure t
+  :after org
   :custom
   (org-modern-table nil)
   :hook ((org-mode . org-modern-mode)
