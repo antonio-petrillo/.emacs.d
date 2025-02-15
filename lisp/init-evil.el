@@ -36,7 +36,8 @@
   (evil-set-leader 'operator (kbd "SPC") nil)
   (evil-set-leader 'replace (kbd "SPC") nil)
   (evil-set-leader 'motion (kbd "SPC") nil)
-  (evil-set-leader 'insert (kbd "C-SPC") nil)
+  (evil-set-leader 'insert (kbd "M-SPC") nil)
+  (evil-set-leader 'emacs (kbd "C-c c") nil)
 
   (evil-set-leader 'normal (kbd "<leader> m") t)
   (evil-set-leader 'visual (kbd "<leader> m") t)
