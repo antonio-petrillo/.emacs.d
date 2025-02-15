@@ -1206,7 +1206,7 @@ Doom modeline give a nice and moder modeline UI.
 ;;; init-ui.el ends here
 #+end_src
 
-**  Project related setup
+** Project related setup
 Mainly setup *magit* and *project*.
 #+begin_src emacs-lisp :tangle "lisp/init-proj.el"
 ;;; init-proj.el -*- lexical-binding: t; -*-
@@ -1570,6 +1570,7 @@ An interesting low level language.
 Dependencies:
 - [[https://github.com/DanielGavin/ols][ols]] language server 
 
+Note ~odin-mode~ doesn't support hs-minor-mode so I disable with a custom hook.
 #+begin_src emacs-lisp :tangle "lisp/langs/odin-setup.el"
 ;;; odin-setup.el -*- lexical-binding: t; -*-
 (defun nto/hs-minor-mode-disable-hook ()
