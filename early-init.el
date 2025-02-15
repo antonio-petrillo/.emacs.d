@@ -37,6 +37,8 @@
       tool-bar-mode nil
       scroll-bar-mode nil)
 
+(add-to-list 'default-frame-alist '(fullscreen . maximized))
+
 (setq gc-cons-threshold most-positive-fixnum
       gc-cons-percentage 0.5)
 
