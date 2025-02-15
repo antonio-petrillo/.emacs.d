@@ -8,9 +8,9 @@
    (markdown-mode . denote-dired-mode))
   :config
   (setq denote-directory "~/Documents/Org/notes")
-  (setq denote-known-keywords '("emacs" "programming" "algorithm" "datastructure"
-                                "pattern" "math" "art" "music"
-                                "film" "book" "philosophy" "meta"
+  (setq denote-known-keywords '("emacs" "programming" "algorithm"
+				"datastructure" "cryptography" "logbook"
+                                "film" "book" "meta"
                                 "linux" "windows" "fitness"))
   (setq denote-infer-keywords t)
   (setq denote-sort-keywords t)
@@ -21,8 +21,13 @@
    ("<leader> nr" . denote-rename-file)
    ("<leader> nR" . denote-rename-file-using-front-matter)
    ("<leader> ni" . denote-link)
+   ("<leader> nh" . denote-org-extras-link-to-heading)
    ("<leader> nI" . denote-add-links)
-   ("<leader> nb" . denote-backlinks)))
+   ("<leader> nb" . denote-backlinks)
+   ("<leader> nB" . denote-org-extras-backlinks-for-heading)
+
+   ("<leader> nss" . denote-sequence)
+   ("<leader> nsi" . denote-sequence-link)))
 
 (use-package consult-denote
   :ensure t

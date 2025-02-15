@@ -12,7 +12,13 @@
 	("C-," . nil)
 	("M-;" . nil)
 	("M-l" . nil)
-	("C-c ;" . nil))
+	("C-c ;" . nil)
+	("<localleader> c" . org-toggle-checkbox)
+	("<localleader> di" . org-time-stamp)
+	("<localleader> ds" . org-schedule)
+	("<localleader> dd" . org-deadline)
+	("<localleader> t" . org-todo)
+	("<localleader> f" . org-footnote-new))
   :config
   (add-hook 'org-mode-hook
 	    (lambda ()
@@ -33,6 +39,7 @@
   (setq org-src-tab-acts-natively t)
   (setq org-edit-src-content-indentation 0)
   (setq org-export-with-toc t)
+  (setq org-cycle-emulate-tab t)
   (setq org-export-headline-levels 8))
 
 (use-package org-modern

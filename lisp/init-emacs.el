@@ -77,6 +77,16 @@ of delete the previous word."
   :ensure nil
   :hook (elpaca-after-init . delete-selection-mode))
 
+(use-package electric
+  :ensure nil
+  :hook
+  (prog-mode . electric-pair-mode)
+  :config
+  (setq electric-pair-pairs '((?\{ . ?\})
+			      (?\[ . ?\])
+			      (?\( . ?\))
+			      (?\" . ?\"))))
+
 (use-package tab-bar
   :bind
   (("<leader> <tab>s" . tab-switch)

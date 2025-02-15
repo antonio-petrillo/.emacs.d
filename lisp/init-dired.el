@@ -6,8 +6,7 @@
   :custom 
   (dired-listing-switches "-aghl -v --group-directories-first")
   :hook
-  ((dired-mode . dired-hide-details-mode)
-   (dired-mode . hl-line-mode))
+  ((dired-mode . hl-line-mode))
   :config
   (setq dired-recursive-copies 'always)
   (setq dired-recursive-deletes 'always)

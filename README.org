@@ -7,7 +7,6 @@
 + [ ] docker
 + [ ] c-mode
 + [ ] tramp
-+ [ ] eshell (avoid vterm!)
 
 * Early Init file
 #+begin_src emacs-lisp :tangle "early-init.el"
@@ -163,7 +162,7 @@ To disable a language just remove it from the list.
 ** Elpaca bootstrap
 The first thing to do is to bootstrap the [[https://github.com/progfolio/elpaca][elpaca]] package manager, this configuration is taken straight up (not straight.el).
 The only thing I've changed is the ~elpaca-directory~, instead of using the ~user-emacs-directory~ I use the cache directory ~nto-cache~.
-#+begin_src emacs-lisp :tangle "lisp/init-elpaca-bootstrap.el"
+#+begin_src emacs-lisp :tangle "lisp/init-elpaca-bootstrap.el" :mkdirp yes
 ;;; init-elpaca-bootstrap.el -*- lexical-binding: t; -*-
 
 (defvar elpaca-installer-version 0.9)
@@ -215,12 +214,12 @@ The only thing I've changed is the ~elpaca-directory~, instead of using the ~use
 NOTE: Using *elpaca* I should replace the ~after-init-hook~ with ~elpaca-after-init~.
 
 ** Configure Builtin packages
-#+begin_src emacs-lisp :tangle "lisp/init-emacs.el"
+#+begin_src emacs-lisp :tangle "lisp/init-emacs.el" :mkdirp yes
 ;;; init-emacs.el -*- lexical-binding: t; -*-
 #+end_src
 
 Enhance the ~keyboard-quit~ based on the actual context.
-#+begin_src emacs-lisp :tangle "lisp/init-emacs.el"
+#+begin_src emacs-lisp :tangle "lisp/init-emacs.el" :mkdirp yes
 (defun nto/keyboard-quit-dwim ()
   "Do-What-I-Mean behaviour for a general `keyboard-quit'.
 
@@ -247,7 +246,7 @@ The DWIM behaviour of this command is as follows:
 #+end_src
 
 Change the behaviour of ~backward-kill-word~ that drive me nuts.
-#+begin_src emacs-lisp :tangle "lisp/init-emacs.el"
+#+begin_src emacs-lisp :tangle "lisp/init-emacs.el" :mkdirp yes
 (defun nto/backward-kill-word()
   "Same as `backward-kill-word' but if it is invoked on a white space character
 at the beginning of the line it will stop at it, furthermore if it is invoked
@@ -271,7 +270,7 @@ Configure emacs variable, in order:
 - /mouse/ drag files
 - add line number on while programming
 - enable text folding
-#+begin_src emacs-lisp :tangle "lisp/init-emacs.el"
+#+begin_src emacs-lisp :tangle "lisp/init-emacs.el" :mkdirp yes
 (use-package emacs
   :ensure nil
   :custom
@@ -303,19 +302,19 @@ Configure emacs variable, in order:
 #+end_src
 
 No littering is not builtin but it is essential to not pollute the config directory.
-#+begin_src emacs-lisp :tangle "lisp/init-emacs.el"
+#+begin_src emacs-lisp :tangle "lisp/init-emacs.el" :mkdirp yes
 (use-package no-littering
   :ensure t)
 #+end_src
 
 Overwrite region when writing, no that useful with /evil-mode/ but in a few cases I still use the /emacs-state/. 
-#+begin_src emacs-lisp :tangle "lisp/init-emacs.el"
+#+begin_src emacs-lisp :tangle "lisp/init-emacs.el" :mkdirp yes
 (use-package delsel
   :ensure nil
   :hook (elpaca-after-init . delete-selection-mode))
 #+end_src
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle "lisp/init-emacs.el" :mkdirp yes
 (use-package electric
   :ensure nil
   :hook
@@ -328,7 +327,7 @@ Overwrite region when writing, no that useful with /evil-mode/ but in a few case
 #+end_src
 
 Add the bindings for ~tab-bar~ commands, also there is a sneak peek about the ~<leader>~ key.
-#+begin_src emacs-lisp :tangle "lisp/init-emacs.el"
+#+begin_src emacs-lisp :tangle "lisp/init-emacs.el" :mkdirp yes
 (use-package tab-bar
   :bind
   (("<leader> <tab>s" . tab-switch)
@@ -341,7 +340,7 @@ Add the bindings for ~tab-bar~ commands, also there is a sneak peek about the ~<
 #+end_src
 
 A brief reminder: I should research a way to customize the tab-bar aspect, it is a great place to put something like a battery indicator. 
-#+begin_src emacs-lisp :tangle "lisp/init-emacs.el"
+#+begin_src emacs-lisp :tangle "lisp/init-emacs.el" :mkdirp yes
 (provide 'init-emacs)
 ;;; lisp/init-emacs.el ends here
 #+end_src
@@ -349,12 +348,12 @@ A brief reminder: I should research a way to customize the tab-bar aspect, it is
 ** Configure Window managements
 Windows here stands for emacs windows, not the OS.
 
-#+begin_src emacs-lisp :tangle "lisp/init-windows.el"
+#+begin_src emacs-lisp :tangle "lisp/init-windows.el" :mkdirp yes
 ;;; init-window.el -*- lexical-binding: t; -*-
 #+end_src
 
 Set rules for popup buffers, here a resource on the topic made my [[https://www.youtube.com/watch?v=1-UIzYPn38s&list=PL8Bwba5vnQK3sQdwAbtdvuxUdtKSfOftA&index=6C][Prot]], also the part about occur, grep, etc... is taken from it's config with some minor changes.
-#+begin_src emacs-lisp :tangle "lisp/init-windows.el"
+#+begin_src emacs-lisp :tangle "lisp/init-windows.el" :mkdirp yes
 (setq display-buffer-alist
       `(("\\*Occur\\*"
          (display-buffer-reuse-mode-window display-buffer-below-selected)
@@ -382,7 +381,7 @@ Set rules for popup buffers, here a resource on the topic made my [[https://www.
 #+end_src
 
 Enable winner mode, this allow to have a /history/ of windows configuration.
-#+begin_src emacs-lisp :tangle "lisp/init-windows.el"
+#+begin_src emacs-lisp :tangle "lisp/init-windows.el" :mkdirp yes
 (use-package winner
   :ensure nil
   :hook (elpaca-after-init . winner-mode)
@@ -393,7 +392,7 @@ Enable winner mode, this allow to have a /history/ of windows configuration.
 
 Spacious padding add a pad 🤯 in the emacs frame and between windows.
 Add a more aesthetic look.
-#+begin_src emacs-lisp :tangle "lisp/init-windows.el"
+#+begin_src emacs-lisp :tangle "lisp/init-windows.el" :mkdirp yes
 (use-package spacious-padding
   :ensure t
   :hook ((org-mode text-mode) . spacious-padding-mode)
@@ -416,13 +415,13 @@ Add a more aesthetic look.
            :mode-line-inactive spacious-padding-subtle-mode-line-inactive)))
 #+end_src
 
-#+begin_src emacs-lisp :tangle "lisp/init-windows.el"
+#+begin_src emacs-lisp :tangle "lisp/init-windows.el" :mkdirp yes
 (provide 'init-windows)
 ;;; lisp/init-windows.el ends here
 #+end_src
 
 ** Configure Dired (the best file manager) 
-#+begin_src emacs-lisp :tangle "lisp/init-dired.el"
+#+begin_src emacs-lisp :tangle "lisp/init-dired.el" :mkdirp yes
 ;;; init-dired.el -*- lexical-binding: t; -*-
 #+end_src
 
@@ -431,7 +430,7 @@ Dired is a builtin package, a brief description of the configuration variables:
 - ~delete-by-moving-to-trash~ instead of /rm/ files, move them to /trash/ directory
 - ~dired-mouse-drag-files~, ~dired-make-directory-clickable~ enable mouse action in dired
 - ~dired-dwim-target~, so dired try to guess target direction for some actions (i.e. copy or moving) when there are 2 dired windows
-#+begin_src emacs-lisp :tangle "lisp/init-dired.el"
+#+begin_src emacs-lisp :tangle "lisp/init-dired.el" :mkdirp yes
 (use-package dired
   :ensure nil
   :commands (dired)
@@ -449,7 +448,7 @@ Dired is a builtin package, a brief description of the configuration variables:
 #+end_src
 
 Enable opening directory in dired in /tree/ manner.
-#+begin_src emacs-lisp :tangle "lisp/init-dired.el"
+#+begin_src emacs-lisp :tangle "lisp/init-dired.el" :mkdirp yes
 (use-package dired-subtree
   :ensure t
   :after dired
@@ -465,7 +464,7 @@ Enable opening directory in dired in /tree/ manner.
 #+end_src
 
 Toggle show dotfiles in dired, binded to ~(kbd "C-h")~ like in other file manager like /nautilus/.
-#+begin_src emacs-lisp :tangle "lisp/init-dired.el"
+#+begin_src emacs-lisp :tangle "lisp/init-dired.el" :mkdirp yes
 (use-package dired-hide-dotfiles;
   :ensure t
   :after (dired evil-collection)
@@ -476,7 +475,7 @@ Toggle show dotfiles in dired, binded to ~(kbd "C-h")~ like in other file manage
 #+end_src
 
 Add trashed mode to easily manage the /Trash/ directory.
-#+begin_src emacs-lisp :tangle "lisp/init-dired.el"
+#+begin_src emacs-lisp :tangle "lisp/init-dired.el" :mkdirp yes
 (use-package trashed
   :ensure t
   :commands (trashed)
@@ -487,18 +486,18 @@ Add trashed mode to easily manage the /Trash/ directory.
   (setq trashed-date-format "%Y-%m-%d %H:%M:%S"))
 #+end_src
 
-#+begin_src emacs-lisp :tangle "lisp/init-dired.el"
+#+begin_src emacs-lisp :tangle "lisp/init-dired.el" :mkdirp yes
 (provide 'init-dired)
 ;;; init-dired.el ends here
 #+end_src
 
 ** Configure completion (minibuffer, capf, etc...)
-#+begin_src emacs-lisp :tangle "lisp/init-completion.el"
+#+begin_src emacs-lisp :tangle "lisp/init-completion.el" :mkdirp yes
 ;;; init-completion.el -*- lexical-binding: t; -*-
 #+end_src
 
 Enable ~which-key~, always usefult to learn new shortcuts and strengthen the ones I alread know.
-#+begin_src emacs-lisp :tangle "lisp/init-completion.el"
+#+begin_src emacs-lisp :tangle "lisp/init-completion.el" :mkdirp yes
 (use-package which-key
   :ensure t
   :config
@@ -510,7 +509,7 @@ Enable ~which-key~, always usefult to learn new shortcuts and strengthen the one
 #+end_src
 
 I prefer ~vertico~ because it's better integrated with builtin functionality, I also enable ~vertico-mouse~ so I can use the mouse in minibuffer.
-#+begin_src emacs-lisp :tangle "lisp/init-completion.el"
+#+begin_src emacs-lisp :tangle "lisp/init-completion.el" :mkdirp yes
 (use-package vertico
   :ensure t
   :custom
@@ -525,7 +524,7 @@ I prefer ~vertico~ because it's better integrated with builtin functionality, I 
 #+end_src
 
 ~Marginalia~ add annotations in the minibuffer, I can cycle between annotations strategy with ~(kbd "M-A")~.
-#+begin_src emacs-lisp :tangle "lisp/init-completion.el"
+#+begin_src emacs-lisp :tangle "lisp/init-completion.el" :mkdirp yes
 (use-package marginalia
   :ensure t
   :hook (elpaca-after-init . marginalia-mode)
@@ -537,7 +536,7 @@ I prefer ~vertico~ because it's better integrated with builtin functionality, I 
 ~Orderless~ allow for extremely powerful (in combo with the previous listed packages) text matching in the minibufffer.
 TODO: learn how to switch on the fly between differents /matching/ styles.
 
-#+begin_src emacs-lisp :tangle "lisp/init-completion.el" 
+#+begin_src emacs-lisp :tangle "lisp/init-completion.el"  :mkdirp yes
 (defun nto/match-components-literally ()
   "Components match literally for the rest of the session."
   (interactive)
@@ -553,7 +552,7 @@ TODO: learn how to switch on the fly between differents /matching/ styles.
 #+end_src
 
 Enable ~savehist~ and ~recentf~, so the completion are based on recent file and previous searches.
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle "lisp/init-completion.el"  :mkdirp yes
 (use-package savehist
   :ensure nil
   :hook (elpaca-after-init . savehist-mode)
@@ -566,7 +565,7 @@ Enable ~savehist~ and ~recentf~, so the completion are based on recent file and 
 #+end_src
 
 ~Corfu~ enable completion at point (capf) in emacs, like in other editors like vscode.
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle "lisp/init-completion.el"  :mkdirp yes
 (use-package corfu
   :ensure t
   :hook (elpaca-after-init . global-corfu-mode)
@@ -594,7 +593,7 @@ Enable ~savehist~ and ~recentf~, so the completion are based on recent file and 
 #+end_src
 
 ~Cape~ enhance the completion at point capabilities of emacs, integrate well with ~corfu~.
-#+begin_src emacs-lisp :tangle "lisp/init-completion.el"
+#+begin_src emacs-lisp :tangle "lisp/init-completion.el" :mkdirp yes
 (use-package cape
   :ensure t
   :bind
@@ -612,7 +611,7 @@ Enable ~savehist~ and ~recentf~, so the completion are based on recent file and 
 #+end_src
 
 ~Consult~ gives me a set of commands to replace some builtin and also provide some pretty useful extra commmands.
-#+begin_src emacs-lisp :tangle "lisp/init-completion.el"
+#+begin_src emacs-lisp :tangle "lisp/init-completion.el" :mkdirp yes
 (use-package consult
   :ensure t
   :after evil
@@ -646,7 +645,7 @@ Enable ~savehist~ and ~recentf~, so the completion are based on recent file and 
 
 ~Embark~ is a great package that provide some contextual action, like a right click menu, all controlled by the keyboard obviously.
 Also add ~embark~ and ~consult~ integration.
-#+begin_src emacs-lisp :tangle "lisp/init-completion.el"
+#+begin_src emacs-lisp :tangle "lisp/init-completion.el" :mkdirp yes
 (use-package embark
   :ensure t
   :bind
@@ -667,7 +666,7 @@ Also add ~embark~ and ~consult~ integration.
   (embark-collect-mode . consult-preview-at-point-mode))
 #+end_src
 
-#+begin_src emacs-lisp :tangle "lisp/init-completion.el"
+#+begin_src emacs-lisp :tangle "lisp/init-completion.el" :mkdirp yes
 (provide 'init-completion)
 ;;; init-completion.el ends here
 #+end_src
@@ -676,7 +675,7 @@ Also add ~embark~ and ~consult~ integration.
 Setup /evil-mode/ and related package to enable a proper modal editing.
 
 Use ~undo-tree~ as undo mechanism, I don't bind any special key for the undo visualization tree, the builtin are fine.
-#+begin_src emacs-lisp :tangle "lisp/init-evil.el"
+#+begin_src emacs-lisp :tangle "lisp/init-evil.el" :mkdirp yes
 (use-package undo-tree
   :ensure t
   :custom
@@ -686,7 +685,7 @@ Use ~undo-tree~ as undo mechanism, I don't bind any special key for the undo vis
 #+end_src
 
 Install ~evil-mode~, setup *leader* and *localleader* keys, also bind a gazillion bindings.
-#+begin_src emacs-lisp :tangle "lisp/init-evil.el"
+#+begin_src emacs-lisp :tangle "lisp/init-evil.el" :mkdirp yes
 (use-package evil
   :ensure t
   :after undo-tree
@@ -779,7 +778,7 @@ Install ~evil-mode~, setup *leader* and *localleader* keys, also bind a gazillio
 
 Install ~evil-collection~ to have a good /evil/ baseline in most modes and applications.
 Before enable the package I blacklist some keys so they want be used by ~evil-collection~.
-#+begin_src emacs-lisp :tangle "lisp/init-evil.el"
+#+begin_src emacs-lisp :tangle "lisp/init-evil.el" :mkdirp yes
 (use-package evil-collection
   :ensure t
   :after evil
@@ -796,7 +795,7 @@ Before enable the package I blacklist some keys so they want be used by ~evil-co
 #+end_src
 
 The ~evil-escape~ let me go back to normal mode with a rapid combination of keys (in my case /jk/) instead of reaching for ~(kbd "<escape>")~.
-#+begin_src emacs-lisp :tangle "lisp/init-evil.el"
+#+begin_src emacs-lisp :tangle "lisp/init-evil.el" :mkdirp yes
 (use-package evil-escape
   :ensure t
   :after evil
@@ -811,7 +810,7 @@ The following are a series of /evil-mode/ extension that allow for some peculiar
 
 **** Evil exchange
 Let me exchange two region by simply selecting them and mark for /exchange/ with ~(kbd "gx")~.
-#+begin_src emacs-lisp :tangle "lisp/init-evil.el"
+#+begin_src emacs-lisp :tangle "lisp/init-evil.el" :mkdirp yes
 (use-package evil-exchange
   :ensure t
   :after evil
@@ -824,7 +823,7 @@ Let me exchange two region by simply selecting them and mark for /exchange/ with
 Let me align the textobjects on the left, or the right, of a specific delimiter:
 + ~(kbd "gl")~, align on left
 + ~(kbd "gL")~, align on right
-  #+begin_src emacs-lisp :tangle "lisp/init-evil.el"
+  #+begin_src emacs-lisp :tangle "lisp/init-evil.el" :mkdirp yes
 (use-package evil-lion
   :ensure t
   :after evil
@@ -834,7 +833,7 @@ Let me align the textobjects on the left, or the right, of a specific delimiter:
 
 **** Evil Surrond
 Surround textobject with custom delimiters:
-  #+begin_src emacs-lisp :tangle "lisp/init-evil.el"
+  #+begin_src emacs-lisp :tangle "lisp/init-evil.el" :mkdirp yes
 (use-package evil-surround
   :ensure t
   :after evil
@@ -855,7 +854,7 @@ pHere some examples take from the package docs:p
 
 **** Evil Snipe
 Evil already have a snipe bounded to ~(kbd "f")~ but this package by [[https:github.com/hlissner/evil-snipe][hlissner]] enhance the defualt behaviour with repeateable movements and also other kinds of snipes.
-#+begin_src emacs-lisp :tangle "lisp/init-evil.el"
+#+begin_src emacs-lisp :tangle "lisp/init-evil.el" :mkdirp yes
 (use-package evil-snipe
   :ensure t
   :after evil
@@ -871,7 +870,7 @@ Evil already have a snipe bounded to ~(kbd "f")~ but this package by [[https:git
 
 **** Evil Visualstar 
 Enhance the navigation between same symbols with ~(kbd "#")~  and  ~(kbd "*")~.
-#+begin_src emacs-lisp :tangle "lisp/init-evil.el"
+#+begin_src emacs-lisp :tangle "lisp/init-evil.el" :mkdirp yes
 (use-package evil-visualstar
   :ensure t
   :after evil
@@ -882,7 +881,7 @@ Enhance the navigation between same symbols with ~(kbd "#")~  and  ~(kbd "*")~.
 
 **** Exato
 Add textobject for /xml-like/ formats.
-#+begin_src emacs-lisp :tangle "lisp/init-evil.el"
+#+begin_src emacs-lisp :tangle "lisp/init-evil.el" :mkdirp yes
 (use-package exato
   :ensure t
   :after evil)
@@ -890,7 +889,7 @@ Add textobject for /xml-like/ formats.
 
 **** Evil Nerd Commenter
 Add movement to comment/decomment region or textobjects.
-#+begin_src emacs-lisp :tangle "lisp/init-evil.el"
+#+begin_src emacs-lisp :tangle "lisp/init-evil.el" :mkdirp yes
 (use-package evil-nerd-commenter
   :ensure t
   :after evil
@@ -900,7 +899,7 @@ Add movement to comment/decomment region or textobjects.
 
 **** Evil Textobj Anyblock 
 Add textobjects for block/body, bind to ~(kbd "b")~.
-#+begin_src emacs-lisp :tangle "lisp/init-evil.el"
+#+begin_src emacs-lisp :tangle "lisp/init-evil.el" :mkdirp yes
 (use-package evil-textobj-anyblock
   :ensure t
   :after evil
@@ -911,7 +910,7 @@ Add textobjects for block/body, bind to ~(kbd "b")~.
 
 **** Evil Multiedit
 Add multiple cursor to emacs, despite the name doesn't require /evil-mode/ to work.
-#+begin_src emacs-lisp :tangle "lisp/init-evil.el"
+#+begin_src emacs-lisp :tangle "lisp/init-evil.el" :mkdirp yes
 (use-package evil-multiedit
   :ensure t
   :after evil
@@ -938,7 +937,7 @@ Add multiple cursor to emacs, despite the name doesn't require /evil-mode/ to wo
 
 **** Evil Goggles 
 Add visual helpers on /evil-mode/ actions.
-#+begin_src emacs-lisp :tangle "lisp/init-evil.el"
+#+begin_src emacs-lisp :tangle "lisp/init-evil.el" :mkdirp yes
 (use-package evil-goggles
   :ensure t
   :config
@@ -948,7 +947,7 @@ Add visual helpers on /evil-mode/ actions.
 
 **** Evil Traces
 Similar to /evil-goggles/ but for /iedit/ action, the one accessed by ":command" to be clear.
-#+begin_src emacs-lisp :tangle "lisp/init-evil.el"
+#+begin_src emacs-lisp :tangle "lisp/init-evil.el" :mkdirp yes
 (use-package evil-traces
   :ensure t
   :config
@@ -957,19 +956,19 @@ Similar to /evil-goggles/ but for /iedit/ action, the one accessed by ":command"
 #+end_src
 
 *** Evil End Here 
-#+begin_src emacs-lisp :tangle "lisp/init-evil.el"
+#+begin_src emacs-lisp :tangle "lisp/init-evil.el" :mkdirp yes
 (provide 'init-evil)
 ;;; init-evil.el ends here
 #+end_src
 
 ** Jumps
 Config about specific packages that let me move from a point to another with a single shortcut.
-#+begin_src emacs-lisp :tangle "lisp/init-jumps.el"
+#+begin_src emacs-lisp :tangle "lisp/init-jumps.el" :mkdirp yes
 ;;; init-jumps.el -*- lexical-binding: t; -*-
 #+end_src
 
 Ace-Window let me jump from a window to another visible one with a single key, also allow to perform some actions on the layout on the fly.
-#+begin_src emacs-lisp :tangle "lisp/init-jumps.el"
+#+begin_src emacs-lisp :tangle "lisp/init-jumps.el" :mkdirp yes
 (use-package ace-window
   :ensure t
   :after evil
@@ -999,7 +998,7 @@ Ace-Window let me jump from a window to another visible one with a single key, a
 #+end_src
 
 Avy jump is similar to Ace-Window but works on characters, words and line.
-#+begin_src emacs-lisp :tangle "lisp/init-jumps.el"
+#+begin_src emacs-lisp :tangle "lisp/init-jumps.el" :mkdirp yes
 (use-package avy
   :ensure t
   :after evil
@@ -1012,7 +1011,7 @@ Avy jump is similar to Ace-Window but works on characters, words and line.
 
 A minimap for emacs, don't let me perform select piece of the buffer from the minimap preview, maybe need some extra configuration.
 I don't use it very much.
-#+begin_src emacs-lisp :tangle "lisp/init-jumps.el"
+#+begin_src emacs-lisp :tangle "lisp/init-jumps.el" :mkdirp yes
 (use-package demap
   :ensure (:host gitlab :repo "sawyerjgardner/demap.el")
   :commands (demap-toggle)
@@ -1024,19 +1023,19 @@ I don't use it very much.
   (("<leader> tm" . demap-toggle)))
 #+end_src
 
-#+begin_src emacs-lisp :tangle "lisp/init-jumps.el"
+#+begin_src emacs-lisp :tangle "lisp/init-jumps.el" :mkdirp yes
 (provide 'init-jumps)
 ;;; init-jumps.el ends here
 #+end_src
 
 ** Setup Org Mode
 One of the killer feature of emacs, alongside dired and magit for me.
-#+begin_src emacs-lisp :tangle "lisp/init-org.el"
+#+begin_src emacs-lisp :tangle "lisp/init-org.el" :mkdirp yes
 ;;; init-org.el -*- lexical-binding: t; -*-
 #+end_src
 
 Org is a builtin package, unfortunately it binds way to many keys for.
-#+begin_src emacs-lisp :tangle "lisp/init-org.el"
+#+begin_src emacs-lisp :tangle "lisp/init-org.el" :mkdirp yes
 (use-package org
   :ensure nil
   :hook
@@ -1081,7 +1080,7 @@ Org is a builtin package, unfortunately it binds way to many keys for.
 #+end_src
 
 Enhance the Org UI with /org-modern/.
-#+begin_src emacs-lisp :tangle "lisp/init-org.el"
+#+begin_src emacs-lisp :tangle "lisp/init-org.el" :mkdirp yes
 (use-package org-modern
   :ensure t
   :after org
@@ -1091,14 +1090,14 @@ Enhance the Org UI with /org-modern/.
 	 (org-agenda-finalize . org-modern-agenda)))
 #+end_src
 
-#+begin_src emacs-lisp :tangle "lisp/init-org.el"
+#+begin_src emacs-lisp :tangle "lisp/init-org.el" :mkdirp yes
 (provide 'init-org)
 ;;; init-org.el ends here
 #+end_src
 
 ** Setup Denote for note taking
 I use denote in combination with /org-mode/ (and sometimes /markdown/ and /txt/) to store and link my notes.
-#+begin_src emacs-lisp :tangle "lisp/init-notes.el"
+#+begin_src emacs-lisp :tangle "lisp/init-notes.el" :mkdirp yes
 ;;; init-notes.el -*- lexical-binding: t; -*-
 
 (use-package denote
@@ -1143,12 +1142,12 @@ I use denote in combination with /org-mode/ (and sometimes /markdown/ and /txt/)
 #+end_src
 
 ** Enhance Emacs UI 
-#+begin_src emacs-lisp :tangle "lisp/init-ui.el"
+#+begin_src emacs-lisp :tangle "lisp/init-ui.el" :mkdirp yes
 ;;; init-ui.el -*- lexical-binding: t; -*-
 #+end_src
 
 Icons for Emacs:
-#+begin_src emacs-lisp :tangle "lisp/init-ui.el"
+#+begin_src emacs-lisp :tangle "lisp/init-ui.el" :mkdirp yes
 (use-package nerd-icons
   :ensure t)
 
@@ -1171,14 +1170,14 @@ Icons for Emacs:
 #+end_src
 
 Breadcrumb, show a trace on the top of the buffer about context information, variable, inside the function, etc...
-#+begin_src emacs-lisp :tangle "lisp/init-ui.el"
+#+begin_src emacs-lisp :tangle "lisp/init-ui.el" :mkdirp yes
 (use-package breadcrumb
   :ensure t
   :bind (("<leader> tb" . breadcrumb-local-mode)))
 #+end_src
 
 Rainbow mode change the face of /colors strings/ (like #ff00ff) to the color they represent.
-#+begin_src emacs-lisp :tangle "lisp/init-ui.el"
+#+begin_src emacs-lisp :tangle "lisp/init-ui.el" :mkdirp yes
 (use-package rainbow-mode
   :ensure t
   :commands (rainbow-mode)
@@ -1186,14 +1185,14 @@ Rainbow mode change the face of /colors strings/ (like #ff00ff) to the color the
 #+end_src
 
 Rainbow delimiters use a different face for each nested parentheses, really useful on lisp languages.
-#+begin_src emacs-lisp :tangle "lisp/init-ui.el"
+#+begin_src emacs-lisp :tangle "lisp/init-ui.el" :mkdirp yes
 (use-package rainbow-delimiters
   :ensure t
   :hook (prog-mode . rainbow-delimiters-mode))
 #+end_src
 
 Pulsar highlight the line where the cursor is when it is invoked.
-#+begin_src emacs-lisp :tangle "lisp/init-ui.el"
+#+begin_src emacs-lisp :tangle "lisp/init-ui.el" :mkdirp yes
 (use-package pulsar
   :ensure t
   :config
@@ -1206,7 +1205,7 @@ Pulsar highlight the line where the cursor is when it is invoked.
 #+end_src
 
 Doom modeline give a nice and moder modeline UI. 
-#+begin_src emacs-lisp :tangle "lisp/init-ui.el"
+#+begin_src emacs-lisp :tangle "lisp/init-ui.el" :mkdirp yes
 (use-package doom-modeline
   :ensure t
   :hook (elpaca-after-init . doom-modeline-mode)
@@ -1216,14 +1215,14 @@ Doom modeline give a nice and moder modeline UI.
   (setq doom-modeline-lsp-icon nil))
 #+end_src
 
-#+begin_src emacs-lisp :tangle "lisp/init-ui.el"
+#+begin_src emacs-lisp :tangle "lisp/init-ui.el" :mkdirp yes
 (provide 'init-ui)
 ;;; init-ui.el ends here
 #+end_src
 
 ** Project related setup
 Mainly setup *magit* and *project*.
-#+begin_src emacs-lisp :tangle "lisp/init-proj.el"
+#+begin_src emacs-lisp :tangle "lisp/init-proj.el" :mkdirp yes
 ;;; init-proj.el -*- lexical-binding: t; -*-
 
 (use-package project
@@ -1255,12 +1254,12 @@ Mainly setup *magit* and *project*.
 
 ** Text goodies
 Just packages that makes my life easier working with text, they are not specific to /evil-mode/.
-#+begin_src emacs-lisp :tangle "lisp/init-proj.el"
+#+begin_src emacs-lisp :tangle "lisp/init-proj.el" :mkdirp yes
 ;;; init-text-goodies.el -*- lexical-binding: t; -*-
 #+end_src
 
 Rotate text let me cycle between some common word patterns, i.e. true/false, top/bottom/left/right, etc...
-#+begin_src emacs-lisp :tangle "lisp/init-text-goodies.el"
+#+begin_src emacs-lisp :tangle "lisp/init-text-goodies.el" :mkdirp yes
 (use-package rotate-text
   :ensure (:host github :repo "debug-ito/rotate-text.el")
   :after evil
@@ -1271,7 +1270,7 @@ Rotate text let me cycle between some common word patterns, i.e. true/false, top
 #+end_src
 
 Self explainatory, my english sucks.
-#+begin_src emacs-lisp :tangle "lisp/init-text-goodies.el"
+#+begin_src emacs-lisp :tangle "lisp/init-text-goodies.el" :mkdirp yes
 (use-package google-translate
   :ensure t
   :custom
@@ -1293,7 +1292,7 @@ Self explainatory, my english sucks.
 #+end_src
 
 To edit markdown files (see also the /notes/ section).
-#+begin_src emacs-lisp :tangle "lisp/init-text-goodies.el"
+#+begin_src emacs-lisp :tangle "lisp/init-text-goodies.el" :mkdirp yes
 (use-package markdown-mode
   :ensure t
   :defer t
@@ -1302,7 +1301,7 @@ To edit markdown files (see also the /notes/ section).
 #+end_src
 
 Move line of region of text.
-#+begin_src emacs-lisp :tangle "lisp/init-text-goodies.el"
+#+begin_src emacs-lisp :tangle "lisp/init-text-goodies.el" :mkdirp yes
 (use-package drag-stuff
   :ensure t
   :bind
@@ -1312,14 +1311,14 @@ Move line of region of text.
   (drag-stuff-global-mode 1))
 #+end_src
 
-#+begin_src emacs-lisp :tangle "lisp/init-text-goodies.el"
+#+begin_src emacs-lisp :tangle "lisp/init-text-goodies.el" :mkdirp yes
 (provide 'init-text-goodies)
 ;;; init-text-goodies.el ends here
 #+end_src
 
 ** Snippet
 As snippets system I'm trying ~tempel~, so far so good, but I need to study a bit how to build my own snippets.
-#+begin_src emacs-lisp :tangle "lisp/init-snippets.el"
+#+begin_src emacs-lisp :tangle "lisp/init-snippets.el" :mkdirp yes
 ;;; init-snippets.el -*- lexical-binding: t; -*-
 
 (use-package tempel
@@ -1345,7 +1344,7 @@ As snippets system I'm trying ~tempel~, so far so good, but I need to study a bi
 
 ** Installing Themes 
 Nothing to say, just a bunch of themes.
-#+begin_src emacs-lisp :tangle "lisp/init-themes.el"
+#+begin_src emacs-lisp :tangle "lisp/init-themes.el" :mkdirp yes
 ;;; init-themes.el -*- lexical-binding: t; -*-
 
 (use-package doom-themes
@@ -1373,7 +1372,7 @@ Nothing to say, just a bunch of themes.
 ** Setup fonts
 Setup font, both for monospaced and proportionally spaced font, [[https://www.youtube.com/watch?v=qR8JRYr4BKE&list=PL8Bwba5vnQK3sQdwAbtdvuxUdtKSfOftA&index=8][Prot]] has a good video on the topic.
 My code is almost the same from the video.
-#+begin_src emacs-lisp :tangle "lisp/init-fonts.el"
+#+begin_src emacs-lisp :tangle "lisp/init-fonts.el" :mkdirp yes
 ;;; init-fonts.el -*- lexical-binding: t; -*-
 
 (let ((mono-spaced-font "Aporetic Serif Mono") ;; "Monospace" backup
@@ -1402,7 +1401,7 @@ My code is almost the same from the video.
 Strokes are what other platform calls mouse/touchpad gesture.
 To create a stroke I need to call ~strokes-global-set-stroke~, and after perform the gesture I need a command to bind it, this section contains all the commands specific to strokes actions.
 This section is in *testing* and may be deleted in the future.
-#+begin_src emacs-lisp :tangle "lisp/init-strokes.el"
+#+begin_src emacs-lisp :tangle "lisp/init-strokes.el" :mkdirp yes
 ;;; init-strokes.el -*- lexical-binding: t; -*-
 
 ;; set of function to bind to custom `strokes'
@@ -1417,15 +1416,29 @@ This section is in *testing* and may be deleted in the future.
 ** Setup eshell
 For now this section is a bit empty, I need to explore more the emacs shell.
 Eshell is builtin.
-#+begin_src emacs-lisp :tangle "lisp/init-eshell.el"
+#+begin_src emacs-lisp :tangle "lisp/init-eshell.el" :mkdirp yes
 ;;; init-eshell.el -*- lexical-binding: t; -*-
 (use-package eshell
   :ensure nil
+  :config 
+  (setq eshell-directory-name (expand-file-name "eshell" user-emacs-directory))
+  (setq eshell-aliases-file (expand-file-name "aliases" eshell-directory-name))
   :bind
   (("<leader> ot" . eshell)))
 
 (provide 'init-eshell)
 ;;; init-eshell.el ends here
+#+end_src
+
+Eshell aliases.
+#+begin_src txt :tangle "eshell/aliases" :mkdirp yes
+alias f find-file $1
+alias f find-file $1
+alias ft find-file-other-tab $1
+alias fF find-file-other-frame $1
+alias d dired $1
+alias dt dired-other-tab $1
+alias df dired-other-frame $1
 #+end_src
 
 ** Setup for programming languages 
@@ -1459,7 +1472,7 @@ This module has the following dependencies:
 - [[https://github.com/weavejester/cljfmt][clj-fmt]]
 - [[https://github.com/babashka/neil][neil]]
 
-#+begin_src emacs-lisp :tangle "lisp/langs/clojure-setup.el"
+#+begin_src emacs-lisp :tangle "lisp/langs/clojure-setup.el" :mkdirp yes
 ;;; clojure-setup.el -*- lexical-binding: t; -*-
 
 (use-package paredit
@@ -1553,7 +1566,7 @@ This module has the following dependencies:
 
 *** Emacs Lisp
 For now it is empty.
-#+begin_src emacs-lisp :tangle "lisp/langs/emacs-lisp-setup.el"
+#+begin_src emacs-lisp :tangle "lisp/langs/emacs-lisp-setup.el" :mkdirp yes
 ;;; emacs-lisp-setup.el -*- lexical-binding: t; -*-
 
 (provide 'emacs-lisp-setup)
@@ -1564,7 +1577,7 @@ For now it is empty.
 Dependencies:
 - [[https://github.com/golang/tools/tree/master/gopls][gopls]]
 
-#+begin_src emacs-lisp :tangle "lisp/langs/go-setup.el"
+#+begin_src emacs-lisp :tangle "lisp/langs/go-setup.el" :mkdirp yes
 ;;; go-setup.el -*- lexical-binding: t; -*-
 
 (use-package go-mode
@@ -1586,7 +1599,7 @@ Dependencies:
 - [[https://github.com/DanielGavin/ols][ols]] language server 
 
 Note ~odin-mode~ doesn't support hs-minor-mode so I disable with a custom hook.
-#+begin_src emacs-lisp :tangle "lisp/langs/odin-setup.el"
+#+begin_src emacs-lisp :tangle "lisp/langs/odin-setup.el" :mkdirp yes
 ;;; odin-setup.el -*- lexical-binding: t; -*-
 (defun nto/hs-minor-mode-disable-hook ()
  (hs-minor-mode -1)) 
@@ -1616,7 +1629,7 @@ Another interesting low level language.
 Dependencies:
 - [[https://github.com/zigtools/zls][zls]], language server (NOTE: I should download and compile the version matching my zig-version)
 
-#+begin_src emacs-lisp :tangle "lisp/langs/zig-setup.el"
+#+begin_src emacs-lisp :tangle "lisp/langs/zig-setup.el" :mkdirp yes
 ;;; zig-setup.el -*- lexical-binding: t; -*-
 
 (use-package zig-mode
@@ -1637,7 +1650,7 @@ Dependencies:
 *** Ocaml setup
 Not that I know this language, but in the FP family is the one that I will play with in the near future.
 
-#+begin_src emacs-lisp :tangle "lisp/langs/ocaml-setup.el"
+#+begin_src emacs-lisp :tangle "lisp/langs/ocaml-setup.el" :mkdirp yes
 ;;; ocaml-setup.el -*- lexical-binding: t; -*-
 
 (use-package tuareg
