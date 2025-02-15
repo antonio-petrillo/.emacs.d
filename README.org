@@ -297,6 +297,7 @@ Configure emacs variable, in order:
   (global-set-key (kbd "C--") 'text-scale-decrease)
 
   (global-hl-line-mode)
+  (auto-save-mode -1)
   (load-theme 'modus-vivendi))
 #+end_src
 
@@ -561,7 +562,7 @@ Enable ~savehist~ and ~recentf~, so the completion are based on recent file and 
 
 (use-package recentf
   :ensure nil
-  :hook (elpaca-after-ini . recentf-mode))
+  :hook (elpaca-after-init . recentf-mode))
 #+end_src
 
 ~Corfu~ enable completion at point (capf) in emacs, like in other editors like vscode.
@@ -740,6 +741,7 @@ Install ~evil-mode~, setup *leader* and *localleader* keys, also bind a gazillio
     (kbd "<leader> .") #'find-file
     (kbd "<leader> fs") #'save-buffer
     (kbd "<leader> fd") #'dired 
+    (kbd "<leader> fr") #'recentf 
 
     (kbd "<leader> bk") #'kill-this-buffer
     (kbd "<leader> br") #'revert-buffer

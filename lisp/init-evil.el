@@ -59,6 +59,7 @@
     (kbd "<leader> .") #'find-file
     (kbd "<leader> fs") #'save-buffer
     (kbd "<leader> fd") #'dired 
+    (kbd "<leader> fr") #'recentf 
 
     (kbd "<leader> bk") #'kill-this-buffer
     (kbd "<leader> br") #'revert-buffer

@@ -67,6 +67,7 @@ of delete the previous word."
   (global-set-key (kbd "C--") 'text-scale-decrease)
 
   (global-hl-line-mode)
+  (auto-save-mode -1)
   (load-theme 'modus-vivendi))
 
 (use-package no-littering
