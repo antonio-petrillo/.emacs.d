@@ -51,6 +51,8 @@ of delete the previous word."
   (mouse-autoselect-window nil)
   (strokes-use-strokes-buffer nil)
   :init
+  (setq-default indent-tabs-mode nil)
+  (setq-default tab-width 4)
   (add-hook 'prog-mode-hook (lambda () 
 			      (display-line-numbers-mode 1)
 			      (setq display-line-numbers 'relative)))

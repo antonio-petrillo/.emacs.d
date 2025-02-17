@@ -48,7 +48,7 @@
   :custom
   (org-modern-table nil)
   :hook ((org-mode . org-modern-mode)
-	 (org-agenda-finalize . org-modern-agenda)))
+         (org-agenda-finalize . org-modern-agenda)))
 
 (provide 'init-org)
 ;;; init-org.el ends here

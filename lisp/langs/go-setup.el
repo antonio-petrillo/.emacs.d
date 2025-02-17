@@ -2,7 +2,9 @@
 
 (use-package go-mode
   :ensure t
-  :hook (go-mode . eglot-ensure))
+  :hook (go-mode . eglot-ensure)
+  :bind
+  (("<localleader> f" . gofmt)))
 
 (use-package go-eldoc
   :ensure t

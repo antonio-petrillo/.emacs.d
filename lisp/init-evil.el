@@ -50,6 +50,9 @@
     (kbd "h") #'dired-up-directory
     (kbd "l") #'dired-find-file)
 
+  (evil-define-key '(normal visual operator replace motion) 'global
+    (kbd "gr") #'revert-buffer)
+
   (evil-define-key nil 'global
     (kbd "<leader> hk") #'describe-key
     (kbd "<leader> hv") #'describe-variable

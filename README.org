@@ -1,12 +1,13 @@
 #+AUTHOR: Antonio Petrillo
 #+TITLE: Emacs Config
 
-* To setup [0/3]
+* To setup [0/5]
 + [ ] csv, json, yaml, edn ....
 + [ ] org-agenda
-+ [ ] docker
++ [ ] docker/podman
 + [ ] c-mode
 + [ ] tramp
++ [ ] ligatures
 
 * Early Init file
 #+begin_src emacs-lisp :tangle "early-init.el"
@@ -136,6 +137,8 @@ Each module is explained in his own section.
 (require 'init-snippets)
 (require 'init-themes)
 (require 'init-fonts)
+(require 'init-applications)
+(require 'init-eat)
 (require 'init-strokes)
 (require 'init-eshell)
 (require 'init-prog)
@@ -281,6 +284,8 @@ Configure emacs variable, in order:
   (mouse-autoselect-window nil)
   (strokes-use-strokes-buffer nil)
   :init
+  (setq-default indent-tabs-mode nil)
+  (setq-default tab-width 4)
   (add-hook 'prog-mode-hook (lambda () 
 			      (display-line-numbers-mode 1)
 			      (setq display-line-numbers 'relative)))
@@ -731,6 +736,9 @@ Install ~evil-mode~, setup *leader* and *localleader* keys, also bind a gazillio
     (kbd "h") #'dired-up-directory
     (kbd "l") #'dired-find-file)
 
+  (evil-define-key '(normal visual operator replace motion) 'global
+    (kbd "gr") #'revert-buffer)
+
   (evil-define-key nil 'global
     (kbd "<leader> hk") #'describe-key
     (kbd "<leader> hv") #'describe-variable
@@ -1087,7 +1095,7 @@ Enhance the Org UI with /org-modern/.
   :custom
   (org-modern-table nil)
   :hook ((org-mode . org-modern-mode)
-	 (org-agenda-finalize . org-modern-agenda)))
+         (org-agenda-finalize . org-modern-agenda)))
 #+end_src
 
 #+begin_src emacs-lisp :tangle "lisp/init-org.el" :mkdirp yes
@@ -1413,8 +1421,27 @@ This section is in *testing* and may be deleted in the future.
 ;;; init-strokes.el ends here
 #+end_src
 
-** Setup eshell
-For now this section is a bit empty, I need to explore more the emacs shell.
+** Setup Application
+This section is all about packages that gives me a functionality.
+#+begin_src emacs-lisp :tangle "lisp/init-applications.el" :mkdirp yes
+;;; init-applications.el -*- lexical-binding: t; -*-
+
+#+end_src
+*** XDG app menu
+#+begin_src emacs-lisp :tangle "lisp/init-applications.el" :mkdirp yes
+(use-package xdg-appmenu
+  :ensure (:host codeberg :repo "akib/emacs-xdg-appmenu")
+  :bind
+  (("C-<f2>" . xdg-appmenu)))
+#+end_src
+
+*** Application Ends Here
+#+begin_src emacs-lisp :tangle "lisp/init-applications.el" :mkdirp yes
+(provide 'init-applications)
+;;; init-applications.el ends here
+#+end_src
+
+** Setup shells
 Eshell is builtin.
 #+begin_src emacs-lisp :tangle "lisp/init-eshell.el" :mkdirp yes
 ;;; init-eshell.el -*- lexical-binding: t; -*-
@@ -1424,7 +1451,11 @@ Eshell is builtin.
   (setq eshell-directory-name (expand-file-name "eshell" user-emacs-directory))
   (setq eshell-aliases-file (expand-file-name "aliases" eshell-directory-name))
   :bind
-  (("<leader> ot" . eshell)))
+  (("<leader> oe" . eshell)
+   :map eshell-mode-map
+   ("C-p" . eshell-previous-input)
+   ("C-n" . eshell-next-input)
+   ("C-l" . eshell/clear)))
 
 (provide 'init-eshell)
 ;;; init-eshell.el ends here
@@ -1439,6 +1470,28 @@ alias fF find-file-other-frame $1
 alias d dired $1
 alias dt dired-other-tab $1
 alias df dired-other-frame $1
+alias b switch-to-buffer
+#+end_src
+
+I'm trying the [[https://codeberg.org/akib/emacs-eat][EAT]] terminal.
+
+#+begin_src emacs-lisp :tangle "lisp/init-eat.el" :mkdirp yes
+;;; init-eat.el -*- lexical-binding: t; -*-
+(use-package eat
+  :ensure (:host codeberg :repo "akib/emacs-eat")
+  :init 
+  (add-hook 'eshell-load-hook #'eat-eshell-visual-command-mode)
+  :bind
+  (("<leader> ot" . eat)))
+
+(provide 'init-eat)
+;;; init-eat.el ends here
+#+end_src
+
+Remember to add the following to the ~.bashrc~
+#+begin_src bash
+[ -n "$EAT_SHELL_INTEGRATION_DIR" ] && \
+  source "$EAT_SHELL_INTEGRATION_DIR/bash"
 #+end_src
 
 ** Setup for programming languages 
@@ -1582,7 +1635,9 @@ Dependencies:
 
 (use-package go-mode
   :ensure t
-  :hook (go-mode . eglot-ensure))
+  :hook (go-mode . eglot-ensure)
+  :bind
+  (("<localleader> f" . gofmt)))
 
 (use-package go-eldoc
   :ensure t

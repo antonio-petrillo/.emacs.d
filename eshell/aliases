@@ -5,3 +5,4 @@ alias fF find-file-other-frame $1
 alias d dired $1
 alias dt dired-other-tab $1
 alias df dired-other-frame $1
+alias b switch-to-buffer

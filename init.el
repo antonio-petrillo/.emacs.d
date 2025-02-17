@@ -28,6 +28,8 @@
 (require 'init-snippets)
 (require 'init-themes)
 (require 'init-fonts)
+(require 'init-applications)
+(require 'init-eat)
 (require 'init-strokes)
 (require 'init-eshell)
 (require 'init-prog)
