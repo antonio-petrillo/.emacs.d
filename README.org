@@ -8,6 +8,7 @@
 + [ ] c-mode
 + [ ] tramp
 + [ ] ligatures
++ [ ] elfeed
 
 * Early Init file
 #+begin_src emacs-lisp :tangle "early-init.el"
@@ -829,8 +830,6 @@ Let me exchange two region by simply selecting them and mark for /exchange/ with
 
 **** Evil Lion 
 Let me align the textobjects on the left, or the right, of a specific delimiter:
-+ ~(kbd "gl")~, align on left
-+ ~(kbd "gL")~, align on right
   #+begin_src emacs-lisp :tangle "lisp/init-evil.el" :mkdirp yes
 (use-package evil-lion
   :ensure t
@@ -838,6 +837,9 @@ Let me align the textobjects on the left, or the right, of a specific delimiter:
   :config
   (evil-lion-mode))
 #+end_src
+
++ ~(kbd "gl")~, align on left
++ ~(kbd "gL")~, align on right
 
 **** Evil Surrond
 Surround textobject with custom delimiters:
