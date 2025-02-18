@@ -4,10 +4,10 @@
   :ensure nil
   :hook
   (org-mode . variable-pitch-mode)
-  :init
-  (setq ord-directory (file-name-concat (getenv "HOME") "Documents/Org"))
   :bind
-  (:map org-mode-map
+  (("C-c a" . org-agenda)
+   ("<leader> oa" . org-agenda)
+   :map org-mode-map
 	("C-'" . nil)
 	("C-," . nil)
 	("M-;" . nil)
@@ -19,6 +19,11 @@
 	("<localleader> dd" . org-deadline)
 	("<localleader> t" . org-todo)
 	("<localleader> f" . org-footnote-new))
+  :init 
+  (setq org-directory (expand-file-name "~/Documents/Org"))
+  (setq org-agenda-files `(,(expand-file-name "Inbox.org" org-directory)
+                           ,(expand-file-name "Uni.org" org-directory)
+                           ,(expand-file-name "Other.org" org-directory)))
   :config
   (add-hook 'org-mode-hook
 	    (lambda ()
@@ -27,6 +32,17 @@
 			     (if (char-equal c ?<) t
 			       (,electric-pair-inhibit-predicate c))))))
 
+  (setq org-todo-keywords
+        '((sequence "TODO(t)" "WAIT(w!)" "|" "CANCEL(c!)" "DONE(d!)")))
+
+  (setq org-agenda-span 'week)
+  (setq org-agenda-start-on-weekday 1)
+  (setq org-agenda-window-setup 'current-window)
+
+  (setq org-M-RET-may-split-line '((default . nil)))
+  (setq org-insert-heading-respect-content t)
+  (setq org-log-done 'time)
+  (setq org-log-into-drawer t)
   (setq org-ellipsis "⮧")
   (setq org-adapt-indentation nil)
   (setq org-special-ctrl-a/e nil)
