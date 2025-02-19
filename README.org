@@ -1070,6 +1070,13 @@ Org is a builtin package, unfortunately it binds way to many keys for.
   (setq org-agenda-files `(,(expand-file-name "Inbox.org" org-directory)
                            ,(expand-file-name "Uni.org" org-directory)
                            ,(expand-file-name "Other.org" org-directory)))
+
+  (setq org-agenda-custom-commands
+        `(
+          ("d" "Daily Agenda"
+           ((agenda "" ((org-agenda-span 'day)
+                        (org-deadline-warning-days 7)))))))
+
   :config
   (add-hook 'org-mode-hook
 	    (lambda ()
