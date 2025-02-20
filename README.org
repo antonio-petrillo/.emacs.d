@@ -1071,6 +1071,8 @@ Org is a builtin package, unfortunately it binds way to many keys for.
                            ,(expand-file-name "Uni.org" org-directory)
                            ,(expand-file-name "Other.org" org-directory)))
 
+  (setq org-agenda-files `(,(expand-file-name "Agenda.org" org-directory)))
+
   (setq org-agenda-custom-commands
         `(
           ("d" "Daily Agenda"
@@ -1087,6 +1089,8 @@ Org is a builtin package, unfortunately it binds way to many keys for.
 
   (setq org-todo-keywords
         '((sequence "TODO(t)" "WAIT(w!)" "|" "CANCEL(c!)" "DONE(d!)")))
+
+  (evil-set-initial-state 'org-agenda-mode 'normal)
 
   (setq org-agenda-span 'week)
   (setq org-agenda-start-on-weekday 1)
