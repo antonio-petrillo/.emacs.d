@@ -2,12 +2,10 @@
 #+TITLE: Emacs Config
 
 * To setup 
-+ [ ] csv, json, yaml, edn ....
-+ [ ] org-agenda:
-  + [ ] agenda cmds
-  + [ ] agenda views
-+ [ ] docker/podman
-+ [ ] tramp
++ csv, json, yaml, edn ....
++ docker/podman
++ tramp
++ mail setup (notmuch)
 
 * Early Init file
 #+begin_src emacs-lisp :tangle "early-init.el"
