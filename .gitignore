@@ -3,3 +3,5 @@ tree-sitter/
 eshell/history
 lisp/
 eshell/
+*init.el
+ltximg/

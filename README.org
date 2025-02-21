@@ -1,14 +1,13 @@
 #+AUTHOR: Antonio Petrillo
 #+TITLE: Emacs Config
 
-* To setup [0/5]
+* To setup 
 + [ ] csv, json, yaml, edn ....
 + [ ] org-agenda:
   + [ ] agenda cmds
   + [ ] agenda views
 + [ ] docker/podman
 + [ ] tramp
-+ [ ] elfeed
 
 * Early Init file
 #+begin_src emacs-lisp :tangle "early-init.el"
@@ -508,8 +507,8 @@ Enable ~which-key~, always usefult to learn new shortcuts and strengthen the one
   :ensure t
   :config
   (setq which-key-show-early-on-C-h t)
-  (setq which-key-idle-delay 5000)
-  (setq which-key-idle-secondary-delay 0.05)
+  (setq which-key-idle-delay 0.01)
+  (setq which-key-idle-secondary-delay 0.01)
   :init
   (which-key-mode))
 #+end_src
@@ -759,6 +758,7 @@ Install ~evil-mode~, setup *leader* and *localleader* keys, also bind a gazillio
     (kbd "<leader> bd") #'bookmark-delete
 
     (kbd "<leader> SPC") #'execute-extended-command
+    (kbd "<leader> C-SPC") #'execute-extended-command-for-buffer
 
     (kbd "<leader> tl") #'display-line-numbers-mode
 
@@ -1067,17 +1067,55 @@ Org is a builtin package, unfortunately it binds way to many keys for.
 	("<localleader> f" . org-footnote-new))
   :init 
   (setq org-directory (expand-file-name "~/Documents/Org"))
-  (setq org-agenda-files `(,(expand-file-name "Inbox.org" org-directory)
-                           ,(expand-file-name "Uni.org" org-directory)
-                           ,(expand-file-name "Other.org" org-directory)))
-
   (setq org-agenda-files `(,(expand-file-name "Agenda.org" org-directory)))
 
   (setq org-agenda-custom-commands
         `(
           ("d" "Daily Agenda"
-           ((agenda "" ((org-agenda-span 'day)
-                        (org-deadline-warning-days 7)))))))
+           ((agenda ""
+                    ((org-agenda-span 'day)
+                     (org-deadline-warning-days 7)
+                     (org-agenda-format-date "%A %-e %B %Y")
+                     (org-agenda-overriding-header "Today 📆")))
+            (todo "WAIT"
+                  ((org-agenda-overriding-header "Waiting tasks 🕙")))))
+
+          ("r" "Reading List"
+           ((tags "reading"
+                  ((org-agenda-overriding-header "Currently reading 📖")
+                   (org-agenda-skip-function '(org-agenda-skip-entry-if 'regexp "^\\* Reading list .*"))))
+            (tags "+book-reading"
+                  ((org-agenda-overriding-header "Next to read 📚")
+                   (org-agenda-skip-function '(org-agenda-skip-entry-if 'regexp "^\\* Reading list .*"))))))
+
+          ("g" "Getting Things Done"
+           ((tags "inbox"
+                  ((org-agenda-overriding-header "Inbox: 📬")))
+            (alltodo "TODO"
+                  ((org-agenda-overriding-header "Act: 📌")))
+            (tags "Explore"
+                  ((org-agenda-overriding-header "Explore: 🔭")))))
+
+          ("p" "Projects"
+           ((tags "proj"
+                  ((org-agenda-overriding-header "Projects: 🛠️")
+                   (org-agenda-skip-if 'done)))
+            (tags "proj"
+                  ((org-agenda-overriding-header "Completed: ⚒️✅️")
+                   (org-agenda-skip-function '(org-agenda-skip-entry-if 'nottodo 'done))))))
+
+          ("u" "Uni"
+           ((tags "+uni-exam"
+                  ((org-agenda-overriding-header "Uni: 🎓")
+                   (org-agenda-skip-function '(org-agenda-skip-entry-if 'regexp "^\\* Uni .*"))))
+            (tags "exam"
+                  ((org-agenda-overriding-header "Exams: 📄")
+                   (org-agenda-skip-if 'done)))
+            (tags "+uni+proj"
+                  ((org-agenda-overriding-header "Projects: 💻")))
+            (tags "exam done"
+                  ((org-agenda-overriding-header "Exams Completed: 📄✅")
+                   (org-agenda-skip-function '(org-agenda-skip-entry-if 'nottodo 'done))))))))
 
   :config
   (add-hook 'org-mode-hook
@@ -1091,6 +1129,10 @@ Org is a builtin package, unfortunately it binds way to many keys for.
         '((sequence "TODO(t)" "WAIT(w!)" "|" "CANCEL(c!)" "DONE(d!)")))
 
   (evil-set-initial-state 'org-agenda-mode 'normal)
+  (evil-define-key 'normal org-agenda-mode-map
+    (kbd "q") #'org-agenda-quit
+    (kbd "Q") #'org-agenda-Quit
+    (kbd "RET") #'org-agenda-goto)
 
   (setq org-agenda-span 'week)
   (setq org-agenda-start-on-weekday 1)
@@ -1110,6 +1152,7 @@ Org is a builtin package, unfortunately it binds way to many keys for.
   (setq org-src-fontify-natively t)
   (setq org-src-preserve-indentation t)
   (setq org-src-tab-acts-natively t)
+  (setq org-hide-emphasis-markers t)
   (setq org-edit-src-content-indentation 0)
   (setq org-export-with-toc t)
   (setq org-cycle-emulate-tab t)
@@ -1127,10 +1170,43 @@ Enhance the Org UI with /org-modern/.
          (org-agenda-finalize . org-modern-agenda)))
 #+end_src
 
+Org appear change the visibility of emphasis marker at cursor.
+#+begin_src emacs-lisp :tangle "lisp/init-org.el" :mkdirp yes
+(use-package org-appear
+  :ensure t
+  :hook
+  (org-mode . org-appear-mode))
+#+end_src
+
+Org fragtog enable inline display of latex formulas.
+#+begin_src emacs-lisp :tangle "lisp/init-org.el" :mkdirp yes
+(use-package org-fragtog
+  :ensure t
+  :after org
+  :custom
+  (org-startup-with-latex-preview t)
+  :hook
+  (org-mode . org-fragtog-mode)
+  :custom
+  (org-format-latex-options
+   (plist-put org-format-latex-options :scale 2)
+   (plist-put org-format-latex-options :foreground 'auto)
+   (plist-put org-format-latex-options :background 'auto)))
+#+end_src
+
 #+begin_src emacs-lisp :tangle "lisp/init-org.el" :mkdirp yes
 (provide 'init-org)
 ;;; init-org.el ends here
 #+end_src
+
+*** GTD workflow 
+No specific keybinding or complicated function or file structure to implement it, just my ~Agenda.org~ file and a bunch of /tags/.
+
+1. ~Inbox~, capture and dump idea, tag them with the ~:inbox:~ tag
+2. ~Act~, decide what to do with the ~inbox~ entries, either:
+   + ~Discard~, just delete 
+   + ~Schedule~, either put a /deadline/, /schedule/ or just a /todo/
+3. ~Store~, if I don't want to act store somewhere for future uses
 
 ** Setup Denote for note taking
 I use denote in combination with /org-mode/ (and sometimes /markdown/ and /txt/) to store and link my notes.
@@ -1163,8 +1239,12 @@ I use denote in combination with /org-mode/ (and sometimes /markdown/ and /txt/)
    ("<leader> nb" . denote-backlinks)
    ("<leader> nB" . denote-org-extras-backlinks-for-heading)
 
-   ("<leader> nss" . denote-sequence)
-   ("<leader> nsi" . denote-sequence-link)))
+   ("<leader> nsn" . denote-sequence)
+   ("<leader> nsf" . denote-sequence-dired)
+   ("<leader> nsi" . denote-sequence-link)
+   ("<leader> nsc" . denote-sequence-new-child-of-current)
+   ("<leader> nsr" . denote-sequence-reparent)
+   ("<leader> nss" . denote-sequence-new-sibling-of-current)))
 
 (use-package consult-denote
   :ensure t
@@ -1477,11 +1557,41 @@ This section is all about packages that gives me a functionality.
 
 #+end_src
 *** XDG app menu
-#+begin_src emacs-lisp :tangle "lisp/init-applications.el" :mkdirp yes
+Just an app launcher inside emacs, although it is useful sometimes I disable it.
+Maybe can will be better integrated with a tiling window manager, for now I don't need it.
+#+begin_src emacs-lisp 
 (use-package xdg-appmenu
   :ensure (:host codeberg :repo "akib/emacs-xdg-appmenu")
   :bind
   (("C-<f2>" . xdg-appmenu)))
+#+end_src
+
+*** Distraction free writing
+Darkroom make up for a pleasing writing environment.
+#+begin_src emacs-lisp :tangle "lisp/init-applications.el" :mkdirp yes
+(use-package darkroom
+  :ensure t
+  :bind
+  (("<leader> tw" . darkroom-tentative-mode)))
+#+end_src
+
+*** RSS reader
+Elfeed is an rss reader for emacs, I prefer to configure it with Org mode.
+#+begin_src emacs-lisp :tangle "lisp/init-applications.el" :mkdirp yes
+(use-package elfeed
+  :ensure t
+  :custom
+  (elfeed-db-directory (expand-file-name "elfeed" nto-cache))
+  (elfeed-show-entry-switch 'display-buffer)
+  :bind
+  ("<leader> of" . elfeed))
+
+(use-package elfeed-org
+  :ensure t
+  :config
+  (elfeed-org)
+  :custom
+  (rmh-elfeed-org-files (list (expand-file-name "elfeed.org" org-directory))))
 #+end_src
 
 *** Application Ends Here
@@ -1547,7 +1657,7 @@ Remember to add the following to the ~.bashrc~
 As said in the beginning, each language is configured separately.
 The per-language configuration lives inside the ~/lisp/langs~ directory.
 This module is pretty simple, setup a basic config for ~eglot~ (the LSP client builtin in emacs) and create a function to load all the languages configs from a list of candidates.
-#+begin_src emacs-lisp :tange "lisp/init-prog.el"
+#+begin_src emacs-lisp :tangle "lisp/init-prog.el" :mkdirp yes 
 ;;; init-prog.el -*- lexical-binding: t; -*-
 
 (add-to-list 'load-path (expand-file-name "lisp/langs/" user-emacs-directory))
