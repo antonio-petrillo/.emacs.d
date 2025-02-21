@@ -1106,11 +1106,15 @@ Org is a builtin package, unfortunately it binds way to many keys for.
                   ((org-agenda-overriding-header "Uni: 🎓")
                    (org-agenda-skip-function '(org-agenda-skip-entry-if 'regexp "^\\* Uni .*"))))
             (tags "exam"
-                  ((org-agenda-overriding-header "Exams: 📄")
+                  ((org-agenda-overriding-header "Exams todo: 📄")
                    (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
-                   (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo '("WAIT" "DONE")))))
+                   (org-agenda-skip-function '(org-agenda-skip-entry-if 'nottodo '("PROGRESS")))))
             (tags "exam"
-                  ((org-agenda-overriding-header "Next exams: 📆")
+                  ((org-agenda-overriding-header "Current courses: 🏢")
+                   (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+                   (org-agenda-skip-function '(org-agenda-skip-entry-if 'nottodo '("TODO")))))
+            (tags "exam"
+                  ((org-agenda-overriding-header "Remaining exams: 📆")
                    (org-agenda-skip-function '(org-agenda-skip-entry-if 'nottodo '("WAIT")))))
             (tags "+uni+proj"
                   ((org-agenda-overriding-header "Projects: 💻")))
@@ -1127,7 +1131,7 @@ Org is a builtin package, unfortunately it binds way to many keys for.
 			       (,electric-pair-inhibit-predicate c))))))
 
   (setq org-todo-keywords
-        '((sequence "TODO(t)" "WAIT(w!)" "|" "CANCEL(c!)" "DONE(d!)")))
+        '((sequence "TODO(t)" "WAIT(w!)" "PROGRES(p!)" "|" "CANCEL(c!)" "DONE(d!)")))
 
   (evil-set-initial-state 'org-agenda-mode 'normal)
   (evil-define-key 'normal org-agenda-mode-map
