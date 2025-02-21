@@ -398,7 +398,6 @@ Add a more aesthetic look.
 #+begin_src emacs-lisp :tangle "lisp/init-windows.el" :mkdirp yes
 (use-package spacious-padding
   :ensure t
-  :hook ((org-mode text-mode) . spacious-padding-mode)
   :if (display-graphic-p)
   :bind
   (("<leader> ts" . spacious-padding-mode))
@@ -1108,7 +1107,11 @@ Org is a builtin package, unfortunately it binds way to many keys for.
                    (org-agenda-skip-function '(org-agenda-skip-entry-if 'regexp "^\\* Uni .*"))))
             (tags "exam"
                   ((org-agenda-overriding-header "Exams: 📄")
-                   (org-agenda-skip-if 'done)))
+                   (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+                   (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo '("WAIT" "DONE")))))
+            (tags "exam"
+                  ((org-agenda-overriding-header "Next exams: 📆")
+                   (org-agenda-skip-function '(org-agenda-skip-entry-if 'nottodo '("WAIT")))))
             (tags "+uni+proj"
                   ((org-agenda-overriding-header "Projects: 💻")))
             (tags "exam done"
@@ -1164,6 +1167,7 @@ Enhance the Org UI with /org-modern/.
   :after org
   :custom
   (org-modern-table nil)
+  (org-modern-star nil)
   :hook ((org-mode . org-modern-mode)
          (org-agenda-finalize . org-modern-agenda)))
 #+end_src
