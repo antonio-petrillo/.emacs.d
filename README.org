@@ -1371,6 +1371,16 @@ Mainly setup *magit* and *project*.
   :bind
   (("<leader> gg" . magit-status)))
 
+(use-package diff-hl
+  :ensure t
+  :hook (elpaca-after-init . global-diff-hl-mode)
+  :config
+  (setq diff-hl-global-modes '(not image-mode pdf-view-mode))
+  (setq vc-git-diff-switches '("--histogram"))
+  (setq diff-hl-flydiff-delay 0.5)
+  (setq diff-hl-update-async t)
+  (setq diff-hl-show-staged-changes nil))
+
 (provide 'init-proj)
 ;;; init-proj.el ends here
 #+end_src
@@ -1598,6 +1608,11 @@ Elfeed is an rss reader for emacs, I prefer to configure it with Org mode.
   (elfeed-org)
   :custom
   (rmh-elfeed-org-files (list (expand-file-name "elfeed.org" org-directory))))
+
+(use-package elfeed-goodies
+  :ensure t
+  :config
+  (elfeed-goodies/setup))
 #+end_src
 
 *** Application Ends Here
