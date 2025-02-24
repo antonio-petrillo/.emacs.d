@@ -2,11 +2,7 @@
 #+TITLE: Emacs Config
 
 * To setup 
-+ csv, json, yaml, edn ....
-+ docker/podman
-+ tramp
 + mail setup (notmuch)
-+ Tree sitter
 
 * Early Init file
 #+begin_src emacs-lisp :tangle "early-init.el"
@@ -34,6 +30,7 @@ Tell emacs to store all the extra information inside the /cache/ and keep the co
 
 (setq make-backup-files nil)
 (setq create-lockfiles nil)
+(setq tramp-auto-save-directory (expand-file-name "tramp-autosave" nto-cache))
 
 (setq package-enable-at-startup nil)
 (setq evil-want-keybinding nil)
@@ -153,7 +150,8 @@ To disable a language just remove it from the list.
      go
      odin
      zig
-     ocaml)))
+     ocaml
+     data)))
 #+end_src
 
 #+begin_src emacs-lisp :tangle "init.el"
@@ -283,12 +281,12 @@ Configure emacs variable, in order:
   (mouse-autoselect-window nil)
   (strokes-use-strokes-buffer nil)
   (auto-save-default nil)
-  ( hscroll-margin 2)
-  ( hscroll-step 1)
-  ( scroll-conservatively 10)
-  ( scroll-margin 0)
-  ( scroll-preserve-screen-position t)
-  ( auto-window-vscroll nil)
+  (hscroll-margin 2)
+  (hscroll-step 1)
+  (scroll-conservatively 10)
+  (scroll-margin 0)
+  (scroll-preserve-screen-position t)
+  (auto-window-vscroll nil)
   (mouse-wheel-scroll-amount '(2 ((shift) . hscroll))
                              ( mouse-wheel-scroll-amount-horizontal 2))
   (blink-matching-paren nil)
@@ -621,13 +619,13 @@ Enable ~savehist~ and ~recentf~, so the completion are based on recent file and 
 (use-package cape
   :ensure t
   :bind
-  (("C-c p" . cape-prefix-map)
-   ("M-c f" . cape-file)
-   ("M-c D" . cape-dabbrev)
-   ("M-c d" . cape-dict)
-   ("M-c h" . cape-history)
-   ("M-c k" . cape-keyword)
-   ("M-c l" . cape-line))
+  (("C-c p" . #'cape-prefix-map)
+   ("M-c f" . #'cape-file)
+   ("M-c D" . #'cape-dabbrev)
+   ("M-c d" . #'cape-dict)
+   ("M-c h" . #'cape-history)
+   ("M-c k" . #'cape-keyword)
+   ("M-c l" . #'cape-line))
   :init
   (add-hook 'completion-at-point-functions #'cape-dabbrev)
   (add-hook 'completion-at-point-functions #'cape-file)
@@ -1670,6 +1668,19 @@ Elfeed is an rss reader for emacs, I prefer to configure it with Org mode.
   (elfeed-goodies/setup))
 #+end_src
 
+*** Docker
+Manage container, images and the rest directly from emacs.
+Also include transient menu.
+#+begin_src emacs-lisp :tangle "lisp/init-applications.el" :mkdirp yes
+(use-package docker
+  :ensure t
+  :bind
+  ("<leader> D" . #'docker))
+
+(use-package dockerfile-mode
+  :ensure t)
+#+end_src
+
 *** Application Ends Here
 #+begin_src emacs-lisp :tangle "lisp/init-applications.el" :mkdirp yes
 (provide 'init-applications)
@@ -1970,4 +1981,27 @@ Not that I know this language, but in the FP family is the one that I will play 
 (provide 'ocaml-setup)
 
 ;;; ocaml-setup.el ends here
+#+end_src
+
+*** Data setup
+Setup for all /data/ language format, like csv, end, etc...
+#+begin_src emacs-lisp :tangle "lisp/langs/csv-setup.el" :mkdirp yes
+;;; data-setup.el -*- lexical-binding: t; -*-
+(use-package csv-mode
+  :ensure t
+  :defer 5)
+
+(use-package yaml-mode
+  :ensure t
+  :defer 5)
+
+(use-package json-mode
+  :ensure t
+  :defer 5)
+
+(use-package parsedn
+  :ensure t
+  :defer 5)
+
+;;; data-setup.el ends here
 #+end_src
