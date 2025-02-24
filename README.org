@@ -6,6 +6,7 @@
 + docker/podman
 + tramp
 + mail setup (notmuch)
++ Tree sitter
 
 * Early Init file
 #+begin_src emacs-lisp :tangle "early-init.el"
@@ -282,11 +283,22 @@ Configure emacs variable, in order:
   (mouse-autoselect-window nil)
   (strokes-use-strokes-buffer nil)
   (auto-save-default nil)
+  ( hscroll-margin 2)
+  ( hscroll-step 1)
+  ( scroll-conservatively 10)
+  ( scroll-margin 0)
+  ( scroll-preserve-screen-position t)
+  ( auto-window-vscroll nil)
+  (mouse-wheel-scroll-amount '(2 ((shift) . hscroll))
+                             ( mouse-wheel-scroll-amount-horizontal 2))
+  (blink-matching-paren nil)
+  (x-stretch-cursor nil)
   :init
+  (blink-cursor-mode -1)
   (setq-default indent-tabs-mode nil)
   (setq-default tab-width 4)
   (add-hook 'prog-mode-hook (lambda () 
-			      (display-line-numbers-mode 1)
+			                  (display-line-numbers-mode 1)
 			      (setq display-line-numbers 'relative)))
   (add-hook 'prog-mode-hook #'hs-minor-mode)
   (define-key global-map (kbd "M-c") nil)
@@ -302,7 +314,16 @@ Configure emacs variable, in order:
 
   (global-hl-line-mode)
   (auto-save-mode -1)
-  (load-theme 'modus-vivendi))
+  (load-theme 'modus-vivendi)
+  :bind
+  ("<leader> ie" . #'emoji-list)
+  ("<leader> ii" . #'emoji-insert)
+  ("<leader> id" . #'emoji-describe)
+  ("<leader> is" . #'emoji-search)
+  ("<leader> ir" . #'emoji-recent)
+  ("<leader> iu" . #'insert-char)
+
+  ("<leader> fp" . (lambda () (interactive) (dired user-emacs-directory))))
 #+end_src
 
 No littering is not builtin but it is essential to not pollute the config directory.
@@ -652,8 +673,8 @@ Also add ~embark~ and ~consult~ integration.
 (use-package embark
   :ensure t
   :bind
-  (("C-." . embark-act)
-   ("M-." . embark-dwim)
+  (("C-," . embark-act)
+   ("M-," . embark-dwim)
    ("<leader> hB" . embark-bindings))
   :init
   (setq prefix-help-command #'embark-prefix-help-command)
@@ -773,7 +794,7 @@ Install ~evil-mode~, setup *leader* and *localleader* keys, also bind a gazillio
     (kbd "<leader> w0") #'delete-window
     (kbd "<leader> wo") #'other-window)
 
-  (evil-define-key nil 'global
+  (evil-define-key 'normal 'global
     (kbd "C-a") #'beginning-of-line
     (kbd "C-e") #'end-of-line
     (kbd "C-f") #'forward-char
@@ -943,6 +964,30 @@ Add multiple cursor to emacs, despite the name doesn't require /evil-mode/ to wo
       (kbd "C-p")   #'evil-multiedit-prev)))
 #+end_src
 
+**** Evil Multiple Cursor
+Similar to multiedit but with a different approach, better used with evil movements especially if I have to perform the action on all the occurrences
+#+begin_src emacs-lisp :tangle "lisp/init-evil.el" :mkdirp yes
+(use-package evil-mc
+  :ensure t
+  :after evil
+  :init 
+  (global-evil-mc-mode  1)
+  :config
+  (evil-define-key '(normal visual) 'global
+    "gzm" #'evil-mc-make-all-cursors
+    "gzu" #'evil-mc-undo-all-cursors
+    "gzz" #'evil-mc-undo-all-cursors
+    "gzp" #'evil-mc-pause-cursors
+    "gzr" #'evil-mc-resume-cursors))
+
+(with-eval-after-load 'evil-mc
+  (evil-define-key '(normal visual) evil-mc-key-map
+    (kbd "C-n") #'evil-mc-make-and-goto-next-cursor
+    (kbd "C-N") #'evil-mc-make-and-goto-last-cursor
+    (kbd "C-p") #'evil-mc-make-and-goto-prev-cursor
+    (kbd "C-P") #'evil-mc-make-and-goto-first-cursor))
+#+end_src
+
 **** Evil Goggles 
 Add visual helpers on /evil-mode/ actions.
 #+begin_src emacs-lisp :tangle "lisp/init-evil.el" :mkdirp yes
@@ -1010,6 +1055,8 @@ Avy jump is similar to Ace-Window but works on characters, words and line.
 (use-package avy
   :ensure t
   :after evil
+  :custom
+  (avy-all-windows nil)
   :bind
   (("<leader> jj" . avy-goto-char-timer)
    ("<leader> jl" . avy-goto-line)
@@ -1132,7 +1179,7 @@ Org is a builtin package, unfortunately it binds way to many keys for.
 			       (,electric-pair-inhibit-predicate c))))))
 
   (setq org-todo-keywords
-        '((sequence "TODO(t)" "WAIT(w!)" "PROGRES(p!)" "|" "CANCEL(c!)" "DONE(d!)")))
+        '((sequence "TODO(t)" "WAIT(w!)" "PROGRESS(p!)" "|" "CANCEL(c!)" "DONE(d!)")))
 
   (evil-set-initial-state 'org-agenda-mode 'normal)
   (evil-define-key 'normal org-agenda-mode-map
@@ -1401,6 +1448,13 @@ Rotate text let me cycle between some common word patterns, i.e. true/false, top
   (evil-define-key 'normal 'global
     (kbd "]r") #'rotate-text
     (kbd "[r") #'rotate-text-backward))
+
+(with-eval-after-load 'rotate-text
+  (dolist (rotate-obj '(("false" "true")
+                        ("nord" "east" "sud" "ovest")
+                        ("up" "down")
+                        ("left" "right")))
+    (cl-pushnew rotate-obj rotate-text-words)))
 #+end_src
 
 Self explainatory, my english sucks.
@@ -1689,7 +1743,21 @@ This module is pretty simple, setup a basic config for ~eglot~ (the LSP client b
   :functions (eglot-ensure)
   :commands (eglot)
   :config
-  (setq eglot-autoshutdown t))
+  (setq eglot-autoshutdown t)
+  :bind
+  ("<leader> cr" . #'eglot-rename)
+  ("<leader> cR" . #'eglot-reconnet)
+  ("<leader> cc" . #'eglot-reconnet)
+  ("<leader> co" . #'eglot-code-action-organize-imports)
+  ("<leader> ch" . #'eldoc)
+  ("<leader> cf" . #'xref-find-definitions) ;; same as gd
+  ("<leader> cJ" . #'eglot-find-declaration))
+
+(use-package consult-eglot
+  :ensure t
+  :after (consult eglot)
+  :bind
+  ("<leader> cj" . #'consult-eglot-symbols))
 
 (defun nto/enable-languages (languages)
   (dolist (lang languages)
@@ -1698,7 +1766,6 @@ This module is pretty simple, setup a basic config for ~eglot~ (the LSP client b
 (provide 'init-prog)
 ;;; init-prog.el ends here
 #+end_src
-
 
 *** Clojure  
 This module has the following dependencies:
