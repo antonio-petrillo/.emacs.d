@@ -1,5 +1,6 @@
 #+AUTHOR: Antonio Petrillo
 #+TITLE: Emacs Config
+#+STARTUP: folded
 
 * To setup 
 + mail setup (notmuch)
@@ -154,6 +155,13 @@ To disable a language just remove it from the list.
      data)))
 #+end_src
 
+Start Emacs daemon if he is not yet turning
+#+begin_src emacs-lisp :tangle "init.el"
+(unless (server-running-p)
+  (server-start))
+#+end_src
+
+
 #+begin_src emacs-lisp :tangle "init.el"
 ;;; init.el ends here
 #+end_src
@@ -300,10 +308,8 @@ Configure emacs variable, in order:
 			      (setq display-line-numbers 'relative)))
   (add-hook 'prog-mode-hook #'hs-minor-mode)
   (define-key global-map (kbd "M-c") nil)
-  (define-key global-map (kbd "C-<backspace>") #'nto/backward-kill-word)
-  (define-key global-map (kbd "C-g") #'nto/keyboard-quit-dwim)
-  (define-key global-map (kbd "<esc>") #'nto/keyboard-quit-dwim)
-  (define-key global-map (kbd "<escape>") #'nto/keyboard-quit-dwim)
+  (define-key global-map [remap backward-kill-word] #'nto/backward-kill-word)
+  (define-key global-map [remap keyboard-quit] #'nto/keyboard-quit-dwim)
 
   (global-set-key (kbd "M-<down-mouse-1>") 'strokes-do-stroke)
 
@@ -478,7 +484,6 @@ Enable opening directory in dired in /tree/ manner.
   (:map dired-mode-map
         ("<tab>" . dired-subtree-toggle)
         ("TAB" . dired-subtree-toggle)
-	("SPC" . nil)
         ("<backtab>" . dired-subtree-remove)
         ("S-TAB" . dired-subtree-remove))
   :config
@@ -620,12 +625,20 @@ Enable ~savehist~ and ~recentf~, so the completion are based on recent file and 
   :ensure t
   :bind
   (("C-c p" . #'cape-prefix-map)
-   ("M-c f" . #'cape-file)
-   ("M-c D" . #'cape-dabbrev)
-   ("M-c d" . #'cape-dict)
-   ("M-c h" . #'cape-history)
-   ("M-c k" . #'cape-keyword)
-   ("M-c l" . #'cape-line))
+   ("C-c f" . #'cape-file)
+   ("C-c D" . #'cape-dabbrev)
+   ("C-c d" . #'cape-dict)
+   ("C-c h" . #'cape-history)
+   ("C-c k" . #'cape-keyword)
+   ("C-c L" . #'cape-line)
+   
+   ("<leader> ;p" . #'cape-prefix-map)
+   ("<leader> ;f" . #'cape-file)
+   ("<leader> ;D" . #'cape-dabbrev)
+   ("<leader> ;d" . #'cape-dict)
+   ("<leader> ;h" . #'cape-history)
+   ("<leader> ;k" . #'cape-keyword)
+   ("<leader> ;L" . #'cape-line))
   :init
   (add-hook 'completion-at-point-functions #'cape-dabbrev)
   (add-hook 'completion-at-point-functions #'cape-file)
@@ -739,8 +752,8 @@ Install ~evil-mode~, setup *leader* and *localleader* keys, also bind a gazillio
   (evil-set-leader 'operator (kbd "SPC") nil)
   (evil-set-leader 'replace (kbd "SPC") nil)
   (evil-set-leader 'motion (kbd "SPC") nil)
-  (evil-set-leader 'insert (kbd "M-SPC") nil)
-  (evil-set-leader 'emacs (kbd "C-c c") nil)
+  (evil-set-leader 'insert (kbd "C-SPC") nil)
+  (evil-set-leader 'emacs (kbd "C-c M-c") nil)
 
   (evil-set-leader 'normal (kbd "<leader> m") t)
   (evil-set-leader 'visual (kbd "<leader> m") t)
@@ -1103,14 +1116,15 @@ Org is a builtin package, unfortunately it binds way to many keys for.
    ("M-l" . nil)
    ("C-c ;" . nil)
    ("<localleader> c" . org-toggle-checkbox)
-   ("<localleader> di" . org-time-stamp)
-   ("<localleader> ds" . org-schedule)
-   ("<localleader> dd" . org-deadline)
-   ("<localleader> t" . org-todo)
+   ("<localleader> si" . org-time-stamp)
+   ("<localleader> ss" . org-schedule)
+   ("<localleader> sd" . org-deadline)
+   ("<localleader> t" . org-agenda-todo)
    ("<localleader> f" . org-footnote-new))
   :init 
   (setq org-directory (expand-file-name "~/Documents/Org"))
-  (setq org-agenda-files `(,(expand-file-name "Agenda.org" org-directory)))
+  (setq org-agenda-files `(,(expand-file-name "Agenda.org" org-directory)
+                           ,(expand-file-name "Uni.org" org-directory)))
 
   (setq org-agenda-custom-commands
         `(
@@ -1136,7 +1150,7 @@ Org is a builtin package, unfortunately it binds way to many keys for.
                   ((org-agenda-overriding-header "Inbox: 📬")))
             (alltodo "TODO"
                   ((org-agenda-overriding-header "Act: 📌")))
-            (tags "Explore"
+            (tags "explore" ;; refine
                   ((org-agenda-overriding-header "Explore: 🔭")))))
 
           ("p" "Projects"
@@ -1218,6 +1232,7 @@ Enhance the Org UI with /org-modern/.
   :custom
   (org-modern-table nil)
   (org-modern-star nil)
+  (org-modern-block-fring nil)
   :hook ((org-mode . org-modern-mode)
          (org-agenda-finalize . org-modern-agenda)))
 #+end_src
@@ -1464,6 +1479,7 @@ Self explainatory, my english sucks.
         '(("it" . "en") ("en" . "it")))
   (google-translate-default-source-language "it")
   (google-translate-default-target-language "en")
+  (google-translate-translation-to-kill-ring t)
   :bind
   (("<leader> lp" . google-translate-at-point)
    ("<leader> lP" . google-translate-at-point-reverse))
@@ -1785,95 +1801,92 @@ This module has the following dependencies:
 - [[https://github.com/babashka/neil][neil]]
 
 #+begin_src emacs-lisp :tangle "lisp/langs/clojure-setup.el" :mkdirp yes
-;;; clojure-setup.el -*- lexical-binding: t; -*-
+  ;;; clojure-setup.el -*- lexical-binding: t; -*-
 
-(use-package paredit
-  :ensure t)
+  (use-package paredit
+    :ensure t)
 
-(use-package parseclj
-  :ensure t)
+  (use-package parseclj
+    :ensure t)
 
-(use-package parseedn
-  :ensure t)
+  (use-package clojure-ts-mode
+    :ensure t
+    :hook
+    ((clojure-mode . subword-mode)
+     (clojure-mode . eldoc-mode)
+     (clojure-mode . cider-mode))
+    :init
+    (evil-define-key nil clojure-mode-map
+      (kbd "<localleader> '") #'cider-jack-in-clj
+      (kbd "<localleader> \"") #'cider-jack-in-cljs
+      (kbd "<localleader> m") #'cider-macroexpand-1
+      (kbd "<localleader> M") #'cider-macroexpand-all
+      (kbd "<localleader> d") #'cider-debug-defun-at-point
+      (kbd "<localleader> eb") #'cider-eval-buffer
+      (kbd "<localleader> ed") #'cider-eval-defun-at-point
+      (kbd "<localleader> ee") #'cider-eval-last-sexp
+      (kbd "<localleader> er") #'cider-eval-region
+      (kbd "<localleader> hj") #'cider-javadoc
+      (kbd "<localleader> hc") #'cider-clojuredocs
+      (kbd "<localleader> hn") #'cider-find-ns
+      (kbd "<localleader> ha") #'cider-apropos
+      (kbd "<localleader> hd") #'cider-doc
+      (kbd "<localleader> hw") #'cider-clojuredocs-web
+      (kbd "<localleader> nn") #'cider-browse-ns
+      (kbd "<localleader> nN") #'cider-browse-ns-all
+      (kbd "<localleader> nr") #'cider-ns-refresh
+      (kbd "<localleader> nR") #'cider-ns-reload
+      (kbd "<localleader> pp") #'cider-pprint-eval-last-sexp
+      (kbd "<localleader> pP") #'cider-pprint-eval-last-sexp-to-comment
+      (kbd "<localleader> q")  #'cider-quit
+      (kbd "<localleader> r")  #'cider-restart
+      (kbd "<localleader> tp") #'cider-test-run-project-tests
+      (kbd "<localleader> tr") #'cider-test-rerun-failed-tests
+      (kbd "<localleader> tt") #'cider-test-run-test))
 
-(use-package clojure-ts-mode
-  :ensure t
-  :hook
-  ((clojure-mode . subword-mode)
-   (clojure-mode . eldoc-mode)
-   (clojure-mode . cider-mode))
-  :init
-  (evil-define-key nil clojure-mode-map
-    (kbd "<localleader> '") #'cider-jack-in-clj
-    (kbd "<localleader> \"") #'cider-jack-in-cljs
-    (kbd "<localleader> m") #'cider-macroexpand-1
-    (kbd "<localleader> M") #'cider-macroexpand-all
-    (kbd "<localleader> d") #'cider-debug-defun-at-point
-    (kbd "<localleader> eb") #'cider-eval-buffer
-    (kbd "<localleader> ed") #'cider-eval-defun-at-point
-    (kbd "<localleader> ee") #'cider-eval-last-sexp
-    (kbd "<localleader> er") #'cider-eval-region
-    (kbd "<localleader> hj") #'cider-javadoc
-    (kbd "<localleader> hc") #'cider-clojuredocs
-    (kbd "<localleader> hn") #'cider-find-ns
-    (kbd "<localleader> ha") #'cider-apropos
-    (kbd "<localleader> hd") #'cider-doc
-    (kbd "<localleader> hw") #'cider-clojuredocs-web
-    (kbd "<localleader> nn") #'cider-browse-ns
-    (kbd "<localleader> nN") #'cider-browse-ns-all
-    (kbd "<localleader> nr") #'cider-ns-refresh
-    (kbd "<localleader> nR") #'cider-ns-reload
-    (kbd "<localleader> pp") #'cider-pprint-eval-last-sexp
-    (kbd "<localleader> pP") #'cider-pprint-eval-last-sexp-to-comment
-    (kbd "<localleader> q")  #'cider-quit
-    (kbd "<localleader> r")  #'cider-restart
-    (kbd "<localleader> tp") #'cider-test-run-project-tests
-    (kbd "<localleader> tr") #'cider-test-rerun-failed-tests
-    (kbd "<localleader> tt") #'cider-test-run-test))
+  (use-package clj-refactor
+    :ensure t
+    :after clojure
+    :hook (clojure-mode . clj-refactor-mode)
+    :config
+    (evil-define-key nil clojure-mode-map
+      (kbd "<localleader> r") #'hydra-cljr-help-menu/body))
 
-(use-package clj-refactor
-  :ensure t
-  :after clojure
-  :hook (clojure-mode . clj-refactor-mode)
-  :config
-  (evil-define-key nil clojure-mode-map
-    (kbd "<localleader> r") #'hydra-cljr-help-menu/body))
+  (use-package cider
+    :ensure t
+    :after clojure
+    :config 
+    (setq nrepl-hide-special-buffers t
+          nrepl-log-messages nil
+          cider-repl-display-help-banner nil
+          cider-font-lock-dynamically '(macro core function var deprecated)
+          cider-overlays-use-font-lock t
+          cider-print-options '(("length" 100))
+          cider-prompt-for-symbol nil
+          cider-repl-history-display-duplicates nil
+          cider-repl-history-display-style 'one-line
+          cider-repl-history-file (concat doom-cache-dir "cider-repl-history")
+          cider-repl-history-highlight-current-entry t
+          cider-repl-history-quit-action 'delete-and-restore
+          cider-repl-history-highlight-inserted-item t
+          cider-repl-history-size 1000
+          cider-repl-result-prefix ";; => "
+          cider-repl-use-clojure-font-lock t
+          cider-repl-use-pretty-printing t
+          cider-repl-wrap-history t
+          cider-stacktrace-default-filters '(tooling dup)
+          cider-repl-pop-to-buffer-on-connect 'display-only))
 
-(use-package cider
-  :ensure t
-  :after clojure
-  :config 
-  (setq nrepl-hide-special-buffers t
-        nrepl-log-messages nil
-        cider-repl-display-help-banner nil
-        cider-font-lock-dynamically '(macro core function var deprecated)
-        cider-overlays-use-font-lock t
-        cider-print-options '(("length" 100))
-        cider-prompt-for-symbol nil
-        cider-repl-history-display-duplicates nil
-        cider-repl-history-display-style 'one-line
-        cider-repl-history-file (concat doom-cache-dir "cider-repl-history")
-        cider-repl-history-highlight-current-entry t
-        cider-repl-history-quit-action 'delete-and-restore
-        cider-repl-history-highlight-inserted-item t
-        cider-repl-history-size 1000
-        cider-repl-result-prefix ";; => "
-        cider-repl-use-clojure-font-lock t
-        cider-repl-use-pretty-printing t
-        cider-repl-wrap-history t
-        cider-stacktrace-default-filters '(tooling dup)
-        cider-repl-pop-to-buffer-on-connect 'display-only))
+  (use-package neil
+    :commands (neil-find-clojure-package)
+    :config
+    (setq neil-prompt-for-version-p nil
+          neil-inject-dep-to-project-p t)
+    (evil-define-key nil clojure-mode-map 
+          (kbd "<localleader> f")  #'neil-find-clojure-package))
 
-(use-package neil
-  :commands (neil-find-clojure-package)
-  :config
-  (setq neil-prompt-for-version-p nil
-        neil-inject-dep-to-project-p t)
-  (evil-define-key nil clojure-mode-map 
-        (kbd "<localleader> f")  #'neil-find-clojure-package))
-
-(provide 'clojure-setup)
-;;; clojure-setup.el ends here
+  (provide 'clojure-setup)
+  ;;; clojure-setup.el ends here
 #+end_src
 
 *** Emacs Lisp
@@ -1896,7 +1909,8 @@ Dependencies:
   :ensure t
   :hook (go-mode . eglot-ensure)
   :bind
-  (("<localleader> f" . gofmt)))
+  (:map go-mode-map
+        ("<localleader> f" . gofmt)))
 
 (use-package go-eldoc
   :ensure t
@@ -1985,12 +1999,8 @@ Not that I know this language, but in the FP family is the one that I will play 
 
 *** Data setup
 Setup for all /data/ language format, like csv, end, etc...
-#+begin_src emacs-lisp :tangle "lisp/langs/csv-setup.el" :mkdirp yes
+#+begin_src emacs-lisp :tangle "lisp/langs/data-setup.el" :mkdirp yes
 ;;; data-setup.el -*- lexical-binding: t; -*-
-(use-package csv-mode
-  :ensure t
-  :defer 5)
-
 (use-package yaml-mode
   :ensure t
   :defer 5)
@@ -1999,9 +2009,6 @@ Setup for all /data/ language format, like csv, end, etc...
   :ensure t
   :defer 5)
 
-(use-package parsedn
-  :ensure t
-  :defer 5)
-
+(provide 'data-setup)
 ;;; data-setup.el ends here
 #+end_src
