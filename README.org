@@ -33,6 +33,11 @@ Tell emacs to store all the extra information inside the /cache/ and keep the co
 (setq create-lockfiles nil)
 (setq tramp-auto-save-directory (expand-file-name "tramp-autosave" nto-cache))
 
+(setq org-persist-directory (expand-file-name "org/persist/" nto-cache)
+      org-publish-timestamp-directory (expand-file-name "org/timestamps/" nto-cache)
+      org-preview-latex-image-directory (expand-file-name "org/latex/" nto-cache)
+      org-list-allow-alphabetical t)
+
 (setq package-enable-at-startup nil)
 (setq evil-want-keybinding nil)
 (setq use-short-answers t)
@@ -303,7 +308,7 @@ Configure emacs variable, in order:
   (blink-cursor-mode -1)
   (setq-default indent-tabs-mode nil)
   (setq-default tab-width 4)
-  (add-hook 'prog-mode-hook (lambda () 
+  (add-hook 'prog-mode-hook (lambda ()
 			                  (display-line-numbers-mode 1)
 			      (setq display-line-numbers 'relative)))
   (add-hook 'prog-mode-hook #'hs-minor-mode)
@@ -575,7 +580,8 @@ TODO: learn how to switch on the fly between differents /matching/ styles.
   :config
   (setq completion-styles '(orderless basic))
   (setq completion-category-defaults nil)
-  (setq completion-category-overrride nil))
+  (setq completion-category-overrides '((file (styles orderless partial-completion))))
+  (setq orderless-component-separator #'orderless-escapable-split-on-space))
 #+end_src
 
 Enable ~savehist~ and ~recentf~, so the completion are based on recent file and previous searches.
@@ -1289,7 +1295,7 @@ I use denote in combination with /org-mode/ (and sometimes /markdown/ and /txt/)
   :config
   (setq denote-directory "~/Documents/Org/notes")
   (setq denote-known-keywords '("emacs" "programming" "algorithm"
-				"datastructure" "cryptography" "logbook"
+                                "datastructure" "cryptography" "logbook"
                                 "film" "book" "meta"
                                 "linux" "windows" "fitness"))
   (setq denote-infer-keywords t)
@@ -1301,6 +1307,7 @@ I use denote in combination with /org-mode/ (and sometimes /markdown/ and /txt/)
    ("<leader> nr" . denote-rename-file)
    ("<leader> nR" . denote-rename-file-using-front-matter)
    ("<leader> ni" . denote-link)
+   ("<leader> nl" . denote-link)
    ("<leader> nh" . denote-org-extras-link-to-heading)
    ("<leader> nI" . denote-add-links)
    ("<leader> nb" . denote-backlinks)
