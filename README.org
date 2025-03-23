@@ -1471,11 +1471,13 @@ Rotate text let me cycle between some common word patterns, i.e. true/false, top
     (kbd "[r") #'rotate-text-backward))
 
 (with-eval-after-load 'rotate-text
-  (dolist (rotate-obj '(("false" "true")
-                        ("nord" "east" "sud" "ovest")
-                        ("up" "down")
-                        ("left" "right")))
-    (cl-pushnew rotate-obj rotate-text-words)))
+  (dolist (rotate-words '(("false" "true")
+                          ("nord" "east" "sud" "ovest")
+                          ("up" "down")
+                          ("left" "right")))
+    (cl-pushnew rotate-words rotate-text-words)
+    (dolist (rotate-symbols '(("var" "const")))
+      (cl-pushnew rotate-symbols rotate-text-symbols)))
 #+end_src
 
 Self explainatory, my english sucks.
